@@ -64,6 +64,14 @@
       "dest": "/frontend/contact.html"
     },
     {
+      "src": "/inventory",
+      "dest": "/frontend/inventory.html"
+    },
+    {
+      "src": "/inventory.html",
+      "dest": "/frontend/inventory.html"
+    },
+    {
       "src": "/style.css",
       "dest": "/frontend/style.css"
     },

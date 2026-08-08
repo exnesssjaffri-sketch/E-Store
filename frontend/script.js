@@ -5,6 +5,9 @@ const API_BASE = window.location.hostname === 'localhost'
     ? 'http://localhost:5000/api' 
     : '/api';
 
+// Live backend on Render (used by Inventory Dashboard)
+const LIVE_API_BASE = 'https://e-store-b54f.onrender.com/api';
+
 // ========== TOAST NOTIFICATION ==========
 function showToast(message, type = 'success') {
     document.querySelectorAll('.toast').forEach(t => t.remove());
@@ -469,6 +472,214 @@ function addToCart(productId) {
     showToast('Product added to cart!', 'success');
 }
 
+// ========== INVENTORY DASHBOARD ==========
+let inventoryProducts = [];
+let currentSearchTerm = '';
+
+// Fetch products from live Render backend
+async function fetchInventoryProducts() {
+    const url = `${LIVE_API_BASE}/products${currentSearchTerm ? `?search=${encodeURIComponent(currentSearchTerm)}` : ''}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to fetch products');
+    return response.json();
+}
+
+// Load and render inventory
+async function loadInventory() {
+    const tbody = document.getElementById('productsTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="6" class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading products...</p>
+            </td>
+        </tr>
+    `;
+
+    try {
+        inventoryProducts = await fetchInventoryProducts();
+        if (!Array.isArray(inventoryProducts)) inventoryProducts = [];
+        renderInventoryTable();
+        updateInventoryStats();
+    } catch (error) {
+        console.error('Failed to load inventory:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty-state">
+                    <p>Unable to load products from the server.</p>
+                    <p style="font-size: 13px; margin-top: 8px;">${error.message}</p>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// Render products table
+function renderInventoryTable() {
+    const tbody = document.getElementById('productsTableBody');
+    if (!tbody) return;
+
+    if (inventoryProducts.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty-state">
+                    <p>No products found${currentSearchTerm ? ` for "${currentSearchTerm}"` : ''}.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = inventoryProducts.map(product => `
+        <tr>
+            <td>${product.id}</td>
+            <td class="product-name">${product.name}</td>
+            <td><span class="category-badge">${product.category || 'General'}</span></td>
+            <td class="price-cell">$${Number(product.price).toFixed(2)}</td>
+            <td class="stock-cell ${product.stock <= 10 ? 'stock-low' : 'stock-ok'}">${product.stock}</td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn-edit" onclick="editProduct(${product.id})">Edit</button>
+                    <button class="btn-delete" onclick="deleteProduct(${product.id})">Delete</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Update stats cards
+function updateInventoryStats() {
+    const totalProducts = inventoryProducts.length;
+    const categories = new Set(inventoryProducts.map(p => p.category || 'General')).size;
+    const totalStock = inventoryProducts.reduce((sum, p) => sum + (Number(p.stock) || 0), 0);
+    const totalValue = inventoryProducts.reduce((sum, p) => sum + (Number(p.price) * (Number(p.stock) || 0)), 0);
+
+    document.getElementById('totalProducts').textContent = totalProducts;
+    document.getElementById('totalCategories').textContent = categories;
+    document.getElementById('totalStock').textContent = totalStock;
+    document.getElementById('totalValue').textContent = `$${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+// Search products
+function searchProducts() {
+    const input = document.getElementById('searchInput');
+    currentSearchTerm = input.value.trim();
+    loadInventory();
+}
+
+// Reset search
+function resetSearch() {
+    document.getElementById('searchInput').value = '';
+    currentSearchTerm = '';
+    loadInventory();
+}
+
+// Open Add/Edit modal
+function openProductModal(product = null) {
+    const modal = document.getElementById('productModal');
+    const backdrop = document.getElementById('productModalBackdrop');
+    const title = document.getElementById('modalTitle');
+    const form = document.getElementById('productForm');
+
+    form.reset();
+    document.getElementById('productId').value = '';
+
+    if (product) {
+        title.textContent = 'Edit Product';
+        document.getElementById('productId').value = product.id;
+        document.getElementById('productName').value = product.name || '';
+        document.getElementById('productCategory').value = product.category || '';
+        document.getElementById('productPrice').value = product.price || '';
+        document.getElementById('productStock').value = product.stock || '';
+        document.getElementById('productImage').value = product.image || '';
+        document.getElementById('productDescription').value = product.description || '';
+        document.getElementById('productFeatured').checked = !!product.isFeatured;
+    } else {
+        title.textContent = 'Add Product';
+    }
+
+    modal.classList.add('show');
+    backdrop.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+// Close modal
+function closeProductModal() {
+    document.getElementById('productModal').classList.remove('show');
+    document.getElementById('productModalBackdrop').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// Edit product
+function editProduct(id) {
+    const product = inventoryProducts.find(p => p.id === id);
+    if (product) openProductModal(product);
+}
+
+// Delete product
+async function deleteProduct(id) {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+        const response = await fetch(`${LIVE_API_BASE}/products/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Failed to delete product');
+        showToast('Product deleted successfully!', 'success');
+        loadInventory();
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    }
+}
+
+// Save product (create or update)
+async function saveProduct(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('productId').value;
+    const productData = {
+        name: document.getElementById('productName').value.trim(),
+        category: document.getElementById('productCategory').value.trim(),
+        price: parseFloat(document.getElementById('productPrice').value),
+        stock: parseInt(document.getElementById('productStock').value) || 0,
+        image: document.getElementById('productImage').value.trim() || 'https://via.placeholder.com/300x200?text=Product',
+        description: document.getElementById('productDescription').value.trim(),
+        isFeatured: document.getElementById('productFeatured').checked
+    };
+
+    const saveBtn = document.getElementById('saveProductBtn');
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled = true;
+
+    try {
+        const url = id 
+            ? `${LIVE_API_BASE}/products/${id}`
+            : `${LIVE_API_BASE}/products`;
+        const method = id ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productData)
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || 'Failed to save product');
+        }
+
+        showToast(id ? 'Product updated successfully!' : 'Product added successfully!', 'success');
+        closeProductModal();
+        loadInventory();
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    } finally {
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
+    }
+}
+
 // ========== INIT ALL ==========
 document.addEventListener('DOMContentLoaded', () => {
     initNavbar();
@@ -480,6 +691,11 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFeaturedProducts();
     loadReviews();
     loadBlogs();
+
+    // Load inventory dashboard if on inventory page
+    if (document.getElementById('productsTableBody')) {
+        loadInventory();
+    }
 
     // Trigger navbar state on page load
     window.dispatchEvent(new Event('scroll'));
