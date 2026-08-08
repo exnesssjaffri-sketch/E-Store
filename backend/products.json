@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "name": "Wireless Mouse",
+    "price": 1200,
+    "stock": 25,
+    "category": "Accessories",
+    "image": "https://via.placeholder.com/300x200?text=Wireless+Mouse",
+    "isFeatured": true,
+    "rating": 4.5,
+    "description": "High precision wireless mouse with ergonomic design"
+  },
+  {
+    "id": 2,
+    "name": "USB-C Cable",
+    "price": 500,
+    "stock": 60,
+    "category": "Accessories",
+    "image": "https://via.placeholder.com/300x200?text=USB-C+Cable",
+    "isFeatured": true,
+    "rating": 4.0,
+    "description": "Fast charging USB-C cable, 2 meter length"
+  },
+  {
+    "id": 3,
+    "name": "LED Monitor 24 inch",
+    "price": 22000,
+    "stock": 10,
+    "category": "Monitors",
+    "image": "https://via.placeholder.com/300x200?text=LED+Monitor",
+    "isFeatured": true,
+    "rating": 4.8,
+    "description": "Full HD LED monitor with 75Hz refresh rate"
+  },
+  {
+    "id": 4,
+    "name": "Bluetooth Speaker",
+    "price": 3500,
+    "stock": 40,
+    "category": "Audio",
+    "image": "https://via.placeholder.com/300x200?text=Bluetooth+Speaker",
+    "isFeatured": true,
+    "rating": 4.3,
+    "description": "Portable Bluetooth speaker with deep bass"
+  },
+  {
+    "id": 5,
+    "name": "Laptop Stand",
+    "price": 2500,
+    "stock": 30,
+    "category": "Accessories",
+    "image": "https://via.placeholder.com/300x200?text=Laptop+Stand",
+    "isFeatured": true,
+    "rating": 4.2,
+    "description": "Adjustable aluminum laptop stand"
+  },
+  {
+    "id": 6,
+    "name": "HDMI Cable",
+    "price": 800,
+    "stock": 100,
+    "category": "Accessories",
+    "image": "https://via.placeholder.com/300x200?text=HDMI+Cable",
+    "isFeatured": true,
+    "rating": 4.1,
+    "description": "High speed HDMI cable 4K support"
+  },
+  {
+    "id": 7,
+    "name": "Mechanical Keyboard",
+    "price": 4500,
+    "stock": 20,
+    "category": "Accessories",
+    "image": "https://via.placeholder.com/300x200?text=Keyboard",
+    "isFeatured": true,
+    "rating": 4.7,
+    "description": "RGB mechanical keyboard with blue switches"
+  },
+  {
+    "id": 8,
+    "name": "Webcam HD",
+    "price": 3000,
+    "stock": 15,
+    "category": "Cameras",
+    "image": "https://via.placeholder.com/300x200?text=Webcam+HD",
+    "isFeatured": true,
+    "rating": 4.4,
+    "description": "1080p HD webcam with built-in microphone"
+  }
+]

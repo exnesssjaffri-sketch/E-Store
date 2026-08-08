@@ -1,0 +1,486 @@
+// ========== E-STORE - GLOBAL SCRIPT ==========
+// Pattern: Frontend → Fetch API → Backend → JSON Data
+
+const API_BASE = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : '/api';
+
+// ========== TOAST NOTIFICATION ==========
+function showToast(message, type = 'success') {
+    document.querySelectorAll('.toast').forEach(t => t.remove());
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+}
+
+// ========== API HELPER ==========
+async function apiRequest(endpoint, options = {}) {
+    const url = `${API_BASE}${endpoint}`;
+    const config = {
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options
+    };
+    const response = await fetch(url, config);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || data.message || 'Something went wrong');
+    return data;
+}
+
+// ========== NAVBAR ==========
+function initNavbar() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    // Sticky navbar on scroll
+    window.addEventListener('scroll', () => {
+        const hero = document.querySelector('.hero');
+        const scrollY = window.scrollY;
+        const heroHeight = hero ? hero.offsetHeight : 100;
+        
+        if (scrollY > heroHeight - 100) {
+            navbar.classList.remove('transparent');
+            navbar.classList.add('sticky');
+        } else {
+            if (document.querySelector('.page-header')) {
+                navbar.classList.remove('transparent');
+                navbar.classList.add('sticky');
+            } else {
+                navbar.classList.remove('sticky');
+                navbar.classList.add('transparent');
+            }
+        }
+    });
+
+    // Mobile menu toggle
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const backdrop = document.querySelector('.mobile-menu-backdrop');
+
+    if (hamburger && mobileMenu) {
+        function toggleMenu() {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            if (backdrop) backdrop.classList.toggle('show');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        }
+
+        hamburger.addEventListener('click', toggleMenu);
+        if (backdrop) backdrop.addEventListener('click', toggleMenu);
+
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+    }
+
+    // Set active nav link
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-link').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// ========== SCROLL REVEAL ==========
+function initScrollReveal() {
+    const revealElements = document.querySelectorAll('.reveal');
+    if (revealElements.length === 0) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    revealElements.forEach(el => observer.observe(el));
+}
+
+// ========== LOAD FEATURED PRODUCTS ==========
+async function loadFeaturedProducts(containerId = 'featuredProducts') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Products loading...</p></div>`;
+
+    try {
+        const data = await apiRequest('/products/featured');
+        const products = Array.isArray(data) ? data : (data.data || data.products || []);
+        
+        if (products.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>No featured products available.</p></div>';
+            return;
+        }
+
+        container.innerHTML = products.map(product => `
+            <div class="product-card reveal">
+                <div class="card-image-container">
+                    <img src="${product.image || 'https://via.placeholder.com/300x200'}" 
+                         alt="${product.name}" 
+                         class="product-image"
+                         loading="lazy">
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p class="price">PKR ${product.price.toLocaleString()}</p>
+                    <button class="btn btn-primary btn-small" onclick="addToCart(${product.id})">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        // Re-init scroll reveal for new elements
+        initScrollReveal();
+    } catch (error) {
+        console.error('Failed to load products:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>Unable to load products. Showing sample products.</p>
+            </div>
+            <div class="grid-4">
+                ${getStaticProducts().map(p => `
+                    <div class="product-card">
+                        <div class="card-image-container">
+                            <img src="${p.image}" alt="${p.name}" class="product-image">
+                        </div>
+                        <div class="product-info">
+                            <h3>${p.name}</h3>
+                            <p class="price">PKR ${p.price.toLocaleString()}</p>
+                            <button class="btn btn-primary btn-small">Add to Cart</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+}
+
+// ========== STATIC PRODUCT FALLBACK ==========
+function getStaticProducts() {
+    return [
+        { id: 1, name: 'Wireless Mouse', price: 1200, stock: 25, category: 'Accessories', image: 'https://via.placeholder.com/300x200?text=Wireless+Mouse', isFeatured: true },
+        { id: 2, name: 'USB-C Cable', price: 500, stock: 60, category: 'Accessories', image: 'https://via.placeholder.com/300x200?text=USB-C+Cable', isFeatured: true },
+        { id: 3, name: 'LED Monitor 24 inch', price: 22000, stock: 10, category: 'Monitors', image: 'https://via.placeholder.com/300x200?text=LED+Monitor', isFeatured: true },
+        { id: 4, name: 'Bluetooth Speaker', price: 3500, stock: 40, category: 'Audio', image: 'https://via.placeholder.com/300x200?text=Bluetooth+Speaker', isFeatured: true }
+    ];
+}
+
+// ========== LOAD REVIEWS ==========
+async function loadReviews(containerId = 'reviewsContainer') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Loading reviews...</p></div>`;
+
+    try {
+        const data = await apiRequest('/reviews?featured=true');
+        const reviews = Array.isArray(data) ? data : (data.data || data.reviews || []);
+        
+        if (reviews.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>No reviews yet.</p></div>';
+            return;
+        }
+
+        container.innerHTML = reviews.map(review => `
+            <div class="review-card reveal">
+                <div class="quote-icon">"</div>
+                <div class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                <p>${review.text}</p>
+                <div class="reviewer-name">${review.customerName}</div>
+                <div class="reviewer-title">${review.customerTitle || ''}</div>
+            </div>
+        `).join('');
+
+        initScrollReveal();
+    } catch (error) {
+        console.error('Failed to load reviews:', error);
+        container.innerHTML = `
+            <div class="review-card">
+                <div class="quote-icon">"</div>
+                <div class="review-stars">★★★★★</div>
+                <p>I have experienced the most trustable website. I ordered a laptop from this website and it's been 5 years — the build quality is amazing. The 24/7 service of this website is the best.</p>
+                <div class="reviewer-name">Rizwan Baloch</div>
+                <div class="reviewer-title">Verified Buyer — Laptop Customer</div>
+            </div>
+            <div class="review-card">
+                <div class="quote-icon">"</div>
+                <div class="review-stars">★★★★★</div>
+                <p>Most of my friends are using this website and they randomly talk about this website's features, services. So one day I tried this website on behalf of my friends and I really enjoyed it. Now I recommend it to my family as well.</p>
+                <div class="reviewer-name">Zuhair Ahmed</div>
+                <div class="reviewer-title">Verified Buyer — Regular Customer</div>
+            </div>
+        `;
+    }
+}
+
+// ========== LOAD BLOGS ==========
+async function loadBlogs(containerId = 'blogsContainer') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Loading blogs...</p></div>`;
+
+    try {
+        const data = await apiRequest('/blogs?limit=10');
+        const blogs = Array.isArray(data) ? data : (data.data || data.blogs || []);
+        
+        if (blogs.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>No blog posts available yet.</p></div>';
+            return;
+        }
+
+        container.innerHTML = blogs.map(blog => `
+            <div class="blog-card reveal">
+                <div class="blog-image-wrapper">
+                    <img src="${blog.coverImage || 'https://via.placeholder.com/800x450'}" 
+                         alt="${blog.title}" 
+                         class="blog-image"
+                         loading="lazy">
+                    <span class="category-tag">${blog.category}</span>
+                </div>
+                <div class="blog-content">
+                    <h3>${blog.title}</h3>
+                    <p>${blog.excerpt}</p>
+                    <div class="blog-meta">
+                        <span>${blog.publishedAt || 'August 2026'}</span>
+                        <span>${blog.readTime || '5 min read'}</span>
+                    </div>
+                    <a href="#" class="read-more" onclick="event.preventDefault(); showBlogDetail(${blog.id})">Read More →</a>
+                </div>
+            </div>
+        `).join('');
+
+        initScrollReveal();
+    } catch (error) {
+        console.error('Failed to load blogs:', error);
+        loadStaticBlogs(container);
+    }
+}
+
+function loadStaticBlogs(container) {
+    const blogs = [
+        {
+            id: 1,
+            title: 'Why Online Shopping Has Become Part of Everyday Life',
+            excerpt: 'A few years ago, online shopping was something people mostly used when they couldn\'t find a product nearby. Today, things have changed...',
+            category: 'Shopping Trends',
+            coverImage: 'https://via.placeholder.com/800x450?text=Online+Shopping',
+            publishedAt: 'August 2026',
+            readTime: '5 min read',
+            content: 'A few years ago, online shopping was something people mostly used when they couldn\'t find a product nearby. Today, things have changed. People now order clothes, groceries, accessories, toys, and many other everyday items online because it saves time and makes shopping more convenient.'
+        },
+        {
+            id: 2,
+            title: 'How E Store Is Making Shopping Simple for Everyone',
+            excerpt: 'Shopping should not feel like a difficult task. Sometimes you only need one or two things, but finding them can take much longer than expected...',
+            category: 'Company Updates',
+            coverImage: 'https://via.placeholder.com/800x450?text=E+Store+Simple+Shopping',
+            publishedAt: 'August 2026',
+            readTime: '5 min read',
+            content: 'Shopping should not feel like a difficult task. Sometimes you only need one or two things, but finding them can take much longer than expected. That\'s one of the reasons we created E Store — to bring different products together and make the shopping process easier.'
+        }
+    ];
+
+    container.innerHTML = blogs.map(blog => `
+        <div class="blog-card reveal">
+            <div class="blog-image-wrapper">
+                <img src="${blog.coverImage}" alt="${blog.title}" class="blog-image" loading="lazy">
+                <span class="category-tag">${blog.category}</span>
+            </div>
+            <div class="blog-content">
+                <h3>${blog.title}</h3>
+                <p>${blog.excerpt}</p>
+                <div class="blog-meta">
+                    <span>${blog.publishedAt}</span>
+                    <span>${blog.readTime}</span>
+                </div>
+                <a href="#" class="read-more" onclick="event.preventDefault(); showBlogDetail(${blog.id})">Read More →</a>
+            </div>
+        </div>
+    `).join('');
+    
+    initScrollReveal();
+}
+
+// ========== BLOG DETAIL MODAL ==========
+function showBlogDetail(blogId) {
+    const blogs = [
+        {
+            id: 1,
+            title: 'Why Online Shopping Has Become Part of Everyday Life',
+            content: 'A few years ago, online shopping was something people mostly used when they couldn\'t find a product nearby. Today, things have changed. People now order clothes, groceries, accessories, toys, and many other everyday items online because it saves time and makes shopping more convenient.\n\nAt E Store, we understand that people don\'t always have the time to visit different shops looking for what they need. Having different types of products in one place makes things a little easier. Customers can look through products, compare their options, place an order, and continue with their day.\n\nAnother reason people prefer online shopping is convenience. You can shop from home, at work, or even while relaxing at night. There is no need to deal with traffic or spend hours walking around different stores.\n\nOf course, online shopping is not only about convenience. Customers also want a store they can trust. Clear product information, reasonable prices, reliable delivery, and helpful customer support all make a difference.\n\nOur goal at E Store is to make everyday shopping feel simple rather than complicated. As online shopping continues to become a normal part of people\'s lives, we want to provide a place where customers can find useful products without making the experience unnecessarily difficult.',
+            category: 'Shopping Trends',
+            coverImage: 'https://via.placeholder.com/800x450?text=Online+Shopping',
+            publishedAt: 'August 2026',
+            readTime: '5 min read'
+        },
+        {
+            id: 2,
+            title: 'How E Store Is Making Shopping Simple for Everyone',
+            content: 'Shopping should not feel like a difficult task. Sometimes you only need one or two things, but finding them can take much longer than expected. That\'s one of the reasons we created E Store — to bring different products together and make the shopping process easier.\n\nE Store offers a variety of products for different needs, whether you\'re looking for something for yourself, your family, or even a gift for someone. Instead of visiting several different stores, customers can browse through different categories from one place.\n\nWe also know that a good shopping experience doesn\'t end when someone clicks the order button. Customers want to know when their order will arrive, have convenient payment options, and get help if something goes wrong. That\'s why we focus on making these parts of the experience as straightforward as possible.\n\nFor us, E Store is more than just an online place to buy products. We want it to become a store that people can return to whenever they need something. We\'re still growing and improving, and customer feedback plays an important part in that process.\n\nAt the end of the day, our aim is pretty simple: offer useful products, treat customers fairly, and make online shopping a little easier for everyone.',
+            category: 'Company Updates',
+            coverImage: 'https://via.placeholder.com/800x450?text=E+Store+Simple+Shopping',
+            publishedAt: 'August 2026',
+            readTime: '5 min read'
+        }
+    ];
+
+    const blog = blogs.find(b => b.id === blogId);
+    if (!blog) return;
+
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:white;border-radius:12px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:32px;position:relative;">
+            <button onclick="this.closest('.modal').remove()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#64748B;">✕</button>
+            <img src="${blog.coverImage}" alt="${blog.title}" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:16px;">
+            <span style="background:#EFF6FF;color:#2563EB;font-size:12px;font-weight:600;padding:4px 12px;border-radius:9999px;">${blog.category}</span>
+            <h2 style="margin:12px 0;color:#0F172A;">${blog.title}</h2>
+            <div style="color:#64748B;font-size:13px;margin-bottom:16px;">${blog.publishedAt} · ${blog.readTime}</div>
+            <div style="color:#1E293B;line-height:1.8;white-space:pre-line;">${blog.content}</div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+}
+
+// ========== CONTACT FORM ==========
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+
+    const successMsg = document.querySelector('.success-message');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Clear previous errors
+        document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+
+        // Client-side validation
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value.trim();
+
+        let hasError = false;
+        if (fullName.length < 2) {
+            document.getElementById('fullName').closest('.form-group').classList.add('error');
+            hasError = true;
+        }
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            document.getElementById('email').closest('.form-group').classList.add('error');
+            hasError = true;
+        }
+        if (message.length < 10) {
+            document.getElementById('message').closest('.form-group').classList.add('error');
+            hasError = true;
+        }
+        if (hasError) return;
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+
+        try {
+            await apiRequest('/contact', {
+                method: 'POST',
+                body: JSON.stringify({ fullName, email, phone, subject, message })
+            });
+            
+            if (successMsg) {
+                successMsg.textContent = 'Thank you! We will get back to you within 24 hours.';
+                successMsg.style.display = 'block';
+            }
+            form.reset();
+            showToast('Message sent successfully!', 'success');
+        } catch (error) {
+            showToast('Error: ' + error.message, 'error');
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+// ========== NEWSLETTER FORM ==========
+function initNewsletterForms() {
+    document.querySelectorAll('.newsletter-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = form.querySelector('input[type="email"]');
+            const email = emailInput.value.trim();
+            const submitBtn = form.querySelector('button');
+            
+            if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+                showToast('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Subscribing...';
+            submitBtn.disabled = true;
+
+            try {
+                await apiRequest('/newsletter/subscribe', {
+                    method: 'POST',
+                    body: JSON.stringify({ email })
+                });
+                showToast('Successfully subscribed to our newsletter!', 'success');
+                emailInput.value = '';
+            } catch (error) {
+                if (error.message.includes('already subscribed')) {
+                    showToast('You are already subscribed!', 'info');
+                } else {
+                    showToast('Error: ' + error.message, 'error');
+                }
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    });
+}
+
+// ========== ADD TO CART ==========
+function addToCart(productId) {
+    const btn = event.target;
+    btn.textContent = 'Added ✓';
+    btn.style.background = '#16A34A';
+    setTimeout(() => {
+        btn.textContent = 'Add to Cart';
+        btn.style.background = '';
+    }, 2000);
+    showToast('Product added to cart!', 'success');
+}
+
+// ========== INIT ALL ==========
+document.addEventListener('DOMContentLoaded', () => {
+    initNavbar();
+    initScrollReveal();
+    initContactForm();
+    initNewsletterForms();
+    
+    // Load dynamic content
+    loadFeaturedProducts();
+    loadReviews();
+    loadBlogs();
+
+    // Trigger navbar state on page load
+    window.dispatchEvent(new Event('scroll'));
+});

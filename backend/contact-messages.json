@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "fullName": "Test User",
+    "email": "test@example.com",
+    "subject": "General Inquiry",
+    "message": "This is a test message for the contact form.",
+    "isRead": false,
+    "createdAt": "2026-08-08T09:38:19.052Z"
+  }
+]

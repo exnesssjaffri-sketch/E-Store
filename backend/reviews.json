@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "customerName": "Rizwan Baloch",
+    "customerTitle": "Verified Buyer — Laptop Customer",
+    "rating": 5,
+    "text": "I have experienced the most trustable website. I ordered a laptop from this website and it's been 5 years — the build quality is amazing. The 24/7 service of this website is the best. I recommended this website to my loved ones.",
+    "isFeatured": true,
+    "order": 1
+  },
+  {
+    "id": 2,
+    "customerName": "Zuhair Ahmed",
+    "customerTitle": "Verified Buyer — Regular Customer",
+    "rating": 5,
+    "text": "Most of my friends are using this website and they randomly talk about this website's features, services, and they also say that Zuhair, you wanna try this? I say yes. So one day I tried this website on behalf of my friends and I really enjoyed it. Now I recommend it to my family as well.",
+    "isFeatured": true,
+    "order": 2
+  }
+]
