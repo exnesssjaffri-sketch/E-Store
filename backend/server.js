@@ -156,5 +156,15 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ========== START SERVER (Koyeb / Render / Local) ==========
+const PORT = process.env.PORT || 3000;
+
+// Only listen when run directly (not when imported by Vercel serverless)
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`E-Store API server running on port ${PORT}`);
+    });
+}
+
 // ========== EXPORT FOR VERCEL SERVERLESS ==========
 module.exports = app;
