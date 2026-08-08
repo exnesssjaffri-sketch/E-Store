@@ -476,12 +476,66 @@ function addToCart(productId) {
 let inventoryProducts = [];
 let currentSearchTerm = '';
 
-// Fetch products from live Render backend
+// Static fallback products (used if the live backend is unreachable)
+function getInventoryStaticProducts() {
+    return [
+        { id: 1, name: 'Wireless Mouse', price: 1200, stock: 25, category: 'Accessories' },
+        { id: 2, name: 'USB-C Cable', price: 500, stock: 60, category: 'Accessories' },
+        { id: 3, name: 'LED Monitor 24 inch', price: 22000, stock: 10, category: 'Monitors' },
+        { id: 4, name: 'Bluetooth Speaker', price: 3500, stock: 40, category: 'Audio' },
+        { id: 5, name: 'Laptop Stand', price: 2500, stock: 30, category: 'Accessories' },
+        { id: 6, name: 'HDMI Cable', price: 800, stock: 100, category: 'Accessories' },
+        { id: 7, name: 'Mechanical Keyboard', price: 4500, stock: 20, category: 'Accessories' },
+        { id: 8, name: 'Webcam HD', price: 3000, stock: 15, category: 'Cameras' }
+    ];
+}
+
+// Fetch with timeout + automatic retry (handles Render cold starts)
+async function fetchWithRetry(url, options = {}, retries = 3, timeoutMs = 15000) {
+    let lastError;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const response = await fetch(url, { ...options, signal: controller.signal });
+                if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+                return await response.json();
+            } finally {
+                clearTimeout(timer);
+            }
+        } catch (error) {
+            lastError = error;
+            if (attempt < retries) {
+                // Wait before retrying (backoff: 2s, 4s, 8s)
+                await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
+            }
+        }
+    }
+    throw lastError;
+}
+
+// Fetch products from live Render backend with retry
 async function fetchInventoryProducts() {
     const url = `${LIVE_API_BASE}/products${currentSearchTerm ? `?search=${encodeURIComponent(currentSearchTerm)}` : ''}`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch products');
-    return response.json();
+    return fetchWithRetry(url);
+}
+
+// Show warning banner (keeps static data visible)
+function renderInventoryError(message) {
+    const toolbar = document.querySelector('.inventory-toolbar');
+    if (!toolbar) return;
+    // Remove any existing warning banner
+    const existing = document.querySelector('.inventory-warning');
+    if (existing) existing.remove();
+    const banner = document.createElement('div');
+    banner.className = 'inventory-warning';
+    banner.style.cssText = 'background: #FEF3C7; color: #92400E; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;';
+    banner.innerHTML = `
+        <span>⚠️ ${message}</span>
+        <button class="btn btn-small" style="background: #92400E; color: white;" onclick="loadInventory()">Retry Live</button>
+    `;
+    toolbar.after(banner);
 }
 
 // Load and render inventory
@@ -493,7 +547,7 @@ async function loadInventory() {
         <tr>
             <td colspan="6" class="loading-state">
                 <div class="spinner"></div>
-                <p>Loading products...</p>
+                <p>Loading products... (server may take a moment to wake up)</p>
             </td>
         </tr>
     `;
@@ -505,14 +559,11 @@ async function loadInventory() {
         updateInventoryStats();
     } catch (error) {
         console.error('Failed to load inventory:', error);
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty-state">
-                    <p>Unable to load products from the server.</p>
-                    <p style="font-size: 13px; margin-top: 8px;">${error.message}</p>
-                </td>
-            </tr>
-        `;
+        // Fall back to static products so the dashboard always shows content
+        inventoryProducts = getInventoryStaticProducts();
+        renderInventoryTable();
+        updateInventoryStats();
+        renderInventoryError('Showing sample data. The live server is unreachable. Try again.')
     }
 }
 
