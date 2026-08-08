@@ -9,9 +9,21 @@ const app = express();
 const PRODUCTS_FILE = path.join(__dirname, 'products.json');
 const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
 const BLOGS_FILE = path.join(__dirname, 'blogs.json');
+const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 
 app.use(cors());
 app.use(express.json());
+
+// Root route — serve the inventory dashboard entry (before static so it takes priority)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(FRONTEND_DIR, 'inventory.html'));
+});
+app.get('/inventory', (req, res) => {
+    res.sendFile(path.join(FRONTEND_DIR, 'inventory.html'));
+});
+
+// Serve static frontend files (so Render can host the full site)
+app.use(express.static(FRONTEND_DIR));
 
 // ========== HELPER FUNCTIONS ==========
 function readJSON(filePath) {

@@ -6,7 +6,10 @@ const API_BASE = window.location.hostname === 'localhost'
     : '/api';
 
 // Live backend on Render (used by Inventory Dashboard)
-const LIVE_API_BASE = 'https://e-store-b54f.onrender.com/api';
+// Use same-origin when on Render, otherwise fall back to the Render URL
+const LIVE_API_BASE = window.location.hostname.includes('onrender.com') 
+    ? '/api' 
+    : 'https://e-store-b54f.onrender.com/api';
 
 // ========== TOAST NOTIFICATION ==========
 function showToast(message, type = 'success') {
