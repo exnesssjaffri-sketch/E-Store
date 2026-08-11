@@ -6,10 +6,10 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 
 // ========== SUPABASE CLIENT ==========
-// 👉 Replace YOUR_URL_HERE with your Supabase Project URL
-// 👉 Replace YOUR_KEY_HERE with your Supabase anon/public key
-const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_URL_HERE';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || 'YOUR_KEY_HERE';
+// Uses environment variables if set, otherwise falls back to the project's
+// real Supabase URL + anon key (from Supabase Dashboard → Settings → API)
+const supabaseUrl = process.env.SUPABASE_URL || 'https://hahefxqodceuvjsyrvlf.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'sb_publishable_MUcfxxhXbX2vR64yN_hkbQ_kRSaF_0c';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
@@ -34,7 +34,7 @@ app.get('/api/products', async (req, res) => {
     const { featured, search, category } = req.query;
     let query = supabase.from('products').select('*');
 
-    if (featured === 'true') query = query.eq('isFeatured', true);
+    if (featured === 'true') query = query.eq('isfeatured', true);
     if (search) query = query.ilike('name', `%${search}%`);
     if (category) query = query.eq('category', category);
 
@@ -48,7 +48,7 @@ app.get('/api/products/featured', async (req, res) => {
     const { data, error } = await supabase
         .from('products')
         .select('*')
-        .eq('isFeatured', true)
+        .eq('isfeatured', true)
         .order('id', { ascending: true });
 
     if (error) return res.status(500).json({ error: error.message });
@@ -80,7 +80,7 @@ app.post('/api/products', async (req, res) => {
         stock: req.body.stock || 0,
         category: req.body.category || 'General',
         image: req.body.image || 'https://via.placeholder.com/300x200?text=Product',
-        isFeatured: req.body.isFeatured || false,
+        isfeatured: req.body.isfeatured || false,
         rating: req.body.rating || 0,
         description: req.body.description || ''
     };
@@ -124,7 +124,7 @@ app.get('/api/reviews', async (req, res) => {
     const { featured } = req.query;
     let query = supabase.from('reviews').select('*');
 
-    if (featured === 'true') query = query.eq('isFeatured', true);
+    if (featured === 'true') query = query.eq('isfeatured', true);
 
     const { data, error } = await query.order('order', { ascending: true });
     if (error) return res.status(500).json({ error: error.message });
@@ -166,7 +166,7 @@ app.post('/api/contact', async (req, res) => {
 
     const { error } = await supabase
         .from('contact_messages')
-        .insert([{ fullName, email, phone, subject, message }]);
+        .insert([{ fullname: fullName, email, phone, subject, message }]);
 
     if (error) return res.status(500).json({ error: error.message });
     res.status(201).json({ message: 'Thank you! We will get back to you within 24 hours.' });

@@ -101,7 +101,7 @@ async function loadFeaturedProducts(containerId = 'featuredProducts') {
         const { data: products, error } = await supabase
             .from('products')
             .select('*')
-            .eq('isFeatured', true);
+            .eq('isfeatured', true);
 
         if (error) throw error;
         
@@ -175,7 +175,7 @@ async function loadReviews(containerId = 'reviewsContainer') {
         const { data: reviews, error } = await supabase
             .from('reviews')
             .select('*')
-            .eq('isFeatured', true)
+            .eq('isfeatured', true)
             .order('order', { ascending: true });
 
         if (error) throw error;
@@ -190,8 +190,8 @@ async function loadReviews(containerId = 'reviewsContainer') {
                 <div class="quote-icon">"</div>
                 <div class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
                 <p>${review.text}</p>
-                <div class="reviewer-name">${review.customerName}</div>
-                <div class="reviewer-title">${review.customerTitle || ''}</div>
+                <div class="reviewer-name">${review.customername}</div>
+                <div class="reviewer-title">${review.customertitle || ''}</div>
             </div>
         `).join('');
 
@@ -240,7 +240,7 @@ async function loadBlogs(containerId = 'blogsContainer') {
         container.innerHTML = blogs.map(blog => `
             <div class="blog-card reveal">
                 <div class="blog-image-wrapper">
-                    <img src="${blog.coverImage || 'https://via.placeholder.com/800x450'}" 
+                    <img src="${blog.coverimage || 'https://via.placeholder.com/800x450'}" 
                          alt="${blog.title}" 
                          class="blog-image"
                          loading="lazy">
@@ -250,8 +250,8 @@ async function loadBlogs(containerId = 'blogsContainer') {
                     <h3>${blog.title}</h3>
                     <p>${blog.excerpt}</p>
                     <div class="blog-meta">
-                        <span>${blog.publishedAt || 'August 2026'}</span>
-                        <span>${blog.readTime || '5 min read'}</span>
+                        <span>${blog.publishedat || 'August 2026'}</span>
+                        <span>${blog.readtime || '5 min read'}</span>
                     </div>
                     <a href="#" class="read-more" onclick="event.preventDefault(); showBlogDetail(${blog.id})">Read More →</a>
                 </div>
@@ -401,7 +401,7 @@ function initContactForm() {
         try {
             const { error } = await supabase
                 .from('contact_messages')
-                .insert([{ fullName, email, phone, subject, message }]);
+                .insert([{ fullname: fullName, email, phone, subject, message }]);
 
             if (error) throw error;
             
@@ -641,7 +641,7 @@ function openProductModal(product = null) {
         document.getElementById('productStock').value = product.stock || '';
         document.getElementById('productImage').value = product.image || '';
         document.getElementById('productDescription').value = product.description || '';
-        document.getElementById('productFeatured').checked = !!product.isFeatured;
+        document.getElementById('productFeatured').checked = !!product.isfeatured;
     } else {
         title.textContent = 'Add Product';
     }
@@ -696,7 +696,7 @@ async function saveProduct(event) {
         stock: parseInt(document.getElementById('productStock').value) || 0,
         image: document.getElementById('productImage').value.trim() || 'https://via.placeholder.com/300x200?text=Product',
         description: document.getElementById('productDescription').value.trim(),
-        isFeatured: document.getElementById('productFeatured').checked
+        isfeatured: document.getElementById('productFeatured').checked
     };
 
     const saveBtn = document.getElementById('saveProductBtn');
