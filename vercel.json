@@ -42,6 +42,14 @@
       "dest": "/frontend/contact.html"
     },
     {
+      "src": "/login",
+      "dest": "/frontend/login.html"
+    },
+    {
+      "src": "/login.html",
+      "dest": "/frontend/login.html"
+    },
+    {
       "src": "/inventory",
       "dest": "/frontend/inventory.html"
     },

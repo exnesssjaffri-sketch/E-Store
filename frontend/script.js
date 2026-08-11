@@ -492,7 +492,7 @@ let currentSearchTerm = '';
 async function requireAuth() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return false;
     }
     return true;
@@ -761,7 +761,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Redirect to login if not authenticated
         supabase.auth.getUser().then(({ data: { user } }) => {
             if (!user) {
-                window.location.href = '/login.html';
+                window.location.href = '/login';
                 return;
             }
             loadInventory();
