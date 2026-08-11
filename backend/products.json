@@ -5,7 +5,7 @@
     "price": 1200,
     "stock": 25,
     "category": "Accessories",
-    "image": "https://via.placeholder.com/300x200?text=Wireless+Mouse",
+    "image": "https://kimi-web-img.kimi.ai/img/d1gb7gicmr8iau.cloudfront.net/495c9afedb2d75dbdf2593e0258a8b0c6999babc.png",
     "isFeatured": true,
     "rating": 4.5,
     "description": "High precision wireless mouse with ergonomic design"
@@ -16,7 +16,7 @@
     "price": 500,
     "stock": 60,
     "category": "Accessories",
-    "image": "https://via.placeholder.com/300x200?text=USB-C+Cable",
+    "image": "https://kimi-web-img.kimi.ai/img/media.startech.com/73fe27e5c5650031fdd8deafb8a44e0013d06770.jpg",
     "isFeatured": true,
     "rating": 4.0,
     "description": "Fast charging USB-C cable, 2 meter length"
@@ -27,7 +27,7 @@
     "price": 22000,
     "stock": 10,
     "category": "Monitors",
-    "image": "https://via.placeholder.com/300x200?text=LED+Monitor",
+    "image": "https://kimi-web-img.kimi.ai/img/evmzone.com/b9aff6315a20365d9122a474515a9125472a38a8.jpg",
     "isFeatured": true,
     "rating": 4.8,
     "description": "Full HD LED monitor with 75Hz refresh rate"
@@ -38,7 +38,7 @@
     "price": 3500,
     "stock": 40,
     "category": "Audio",
-    "image": "https://via.placeholder.com/300x200?text=Bluetooth+Speaker",
+    "image": "https://kimi-web-img.kimi.ai/img/cdn.thewirecutter.com/080dcb6c0c16e2b5e607648ce5bf3207e272e7d3.jpg",
     "isFeatured": true,
     "rating": 4.3,
     "description": "Portable Bluetooth speaker with deep bass"
@@ -49,7 +49,7 @@
     "price": 2500,
     "stock": 30,
     "category": "Accessories",
-    "image": "https://via.placeholder.com/300x200?text=Laptop+Stand",
+    "image": "https://kimi-web-img.kimi.ai/img/m.media-amazon.com/8bed9508a08a8d838c136c416f9045b69889d41e.jpg",
     "isFeatured": true,
     "rating": 4.2,
     "description": "Adjustable aluminum laptop stand"
@@ -60,7 +60,7 @@
     "price": 800,
     "stock": 100,
     "category": "Accessories",
-    "image": "https://via.placeholder.com/300x200?text=HDMI+Cable",
+    "image": "https://kimi-web-img.kimi.ai/img/assets.aten.com/5610ab62b42fc988b39286da1f79d954a0cbe947.jpg",
     "isFeatured": true,
     "rating": 4.1,
     "description": "High speed HDMI cable 4K support"
@@ -71,7 +71,7 @@
     "price": 4500,
     "stock": 20,
     "category": "Accessories",
-    "image": "https://via.placeholder.com/300x200?text=Keyboard",
+    "image": "https://kimi-web-img.kimi.ai/img/resource.logitechg.com/ea80d73828311868a607414691db30c4f81679ff.png",
     "isFeatured": true,
     "rating": 4.7,
     "description": "RGB mechanical keyboard with blue switches"
@@ -82,7 +82,7 @@
     "price": 3000,
     "stock": 15,
     "category": "Cameras",
-    "image": "https://via.placeholder.com/300x200?text=Webcam+HD",
+    "image": "https://kimi-web-img.kimi.ai/img/prod-cdn.prod.asbis.io/1cf807f0702eee089a09e068f43b3b6c04c66e8f.webp",
     "isFeatured": true,
     "rating": 4.4,
     "description": "1080p HD webcam with built-in microphone"
