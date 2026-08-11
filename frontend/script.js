@@ -110,6 +110,8 @@ async function loadFeaturedProducts(containerId = 'featuredProducts') {
             return;
         }
 
+        window.allProducts = products;
+
         container.innerHTML = products.map(product => `
             <div class="product-card reveal">
                 <div class="card-image-container">
@@ -121,7 +123,7 @@ async function loadFeaturedProducts(containerId = 'featuredProducts') {
                 <div class="product-info">
                     <h3>${product.name}</h3>
                     <p class="price">PKR ${Number(product.price).toLocaleString()}</p>
-                    <button class="btn btn-primary btn-small" onclick="addToCart(${product.id})">
+                    <button class="btn btn-primary btn-small" onclick="addToCartFromId(${product.id})">
                         Add to Cart
                     </button>
                 </div>
@@ -145,7 +147,7 @@ async function loadFeaturedProducts(containerId = 'featuredProducts') {
                         <div class="product-info">
                             <h3>${p.name}</h3>
                             <p class="price">PKR ${p.price.toLocaleString()}</p>
-                            <button class="btn btn-primary btn-small">Add to Cart</button>
+                            <button class="btn btn-primary btn-small" onclick="addToCartFromId(${p.id})">Add to Cart</button>
                         </div>
                     </div>
                 `).join('')}
@@ -472,16 +474,18 @@ function initNewsletterForms() {
     });
 }
 
-// ========== ADD TO CART ==========
-function addToCart(productId) {
-    const btn = event.target;
-    btn.textContent = 'Added ✓';
-    btn.style.background = '#16A34A';
-    setTimeout(() => {
-        btn.textContent = 'Add to Cart';
-        btn.style.background = '';
-    }, 2000);
-    showToast('Product added to cart!', 'success');
+// ========== ADD TO CART (works with cart.js) ==========
+function addToCartFromId(productId) {
+    const allProducts = window.allProducts || getStaticProducts();
+    const product = allProducts.find(p => String(p.id) === String(productId));
+    if (product) {
+        addToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image
+        });
+    }
 }
 
 // ========== INVENTORY DASHBOARD ==========

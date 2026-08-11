@@ -58,12 +58,32 @@
       "dest": "/frontend/inventory.html"
     },
     {
+      "src": "/checkout",
+      "dest": "/frontend/checkout.html"
+    },
+    {
+      "src": "/checkout.html",
+      "dest": "/frontend/checkout.html"
+    },
+    {
       "src": "/style.css",
       "dest": "/frontend/style.css"
     },
     {
+      "src": "/cart.css",
+      "dest": "/frontend/cart.css"
+    },
+    {
       "src": "/script.js",
       "dest": "/frontend/script.js"
+    },
+    {
+      "src": "/cart.js",
+      "dest": "/frontend/cart.js"
+    },
+    {
+      "src": "/checkout.js",
+      "dest": "/frontend/checkout.js"
     },
     {
       "src": "/supabase-config.js",
