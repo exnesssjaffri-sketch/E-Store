@@ -17,12 +17,15 @@ const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 app.use(cors());
 app.use(express.json());
 
-// Root route — serve the inventory dashboard entry (before static so it takes priority)
+// Root route — serve the home page (before static so it takes priority)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(FRONTEND_DIR, 'inventory.html'));
+    res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 app.get('/inventory', (req, res) => {
     res.sendFile(path.join(FRONTEND_DIR, 'inventory.html'));
+});
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(FRONTEND_DIR, 'login.html'));
 });
 
 // Serve static frontend files (so Render can host the full site)
