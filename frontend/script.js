@@ -157,10 +157,14 @@ async function loadFeaturedProducts(containerId = 'featuredProducts') {
 // ========== STATIC PRODUCT FALLBACK ==========
 function getStaticProducts() {
     return [
-        { id: 1, name: 'Wireless Mouse', price: 1200, stock: 25, category: 'Accessories', image: 'https://via.placeholder.com/300x200?text=Wireless+Mouse', isFeatured: true },
-        { id: 2, name: 'USB-C Cable', price: 500, stock: 60, category: 'Accessories', image: 'https://via.placeholder.com/300x200?text=USB-C+Cable', isFeatured: true },
-        { id: 3, name: 'LED Monitor 24 inch', price: 22000, stock: 10, category: 'Monitors', image: 'https://via.placeholder.com/300x200?text=LED+Monitor', isFeatured: true },
-        { id: 4, name: 'Bluetooth Speaker', price: 3500, stock: 40, category: 'Audio', image: 'https://via.placeholder.com/300x200?text=Bluetooth+Speaker', isFeatured: true }
+        { id: 1, name: 'Wireless Mouse', price: 1200, stock: 25, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/d1gb7gicmr8iau.cloudfront.net/495c9afedb2d75dbdf2593e0258a8b0c6999babc.png', isFeatured: true },
+        { id: 2, name: 'USB-C Cable', price: 500, stock: 60, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/media.startech.com/73fe27e5c5650031fdd8deafb8a44e0013d06770.jpg', isFeatured: true },
+        { id: 3, name: 'LED Monitor 24 inch', price: 22000, stock: 10, category: 'Monitors', image: 'https://kimi-web-img.kimi.ai/img/evmzone.com/b9aff6315a20365d9122a474515a9125472a38a8.jpg', isFeatured: true },
+        { id: 4, name: 'Bluetooth Speaker', price: 3500, stock: 40, category: 'Audio', image: 'https://kimi-web-img.kimi.ai/img/cdn.thewirecutter.com/080dcb6c0c16e2b5e607648ce5bf3207e272e7d3.jpg', isFeatured: true },
+        { id: 5, name: 'Laptop Stand', price: 2500, stock: 30, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/m.media-amazon.com/8bed9508a08a8d838c136c416f9045b69889d41e.jpg', isFeatured: true },
+        { id: 6, name: 'HDMI Cable', price: 800, stock: 100, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/assets.aten.com/5610ab62b42fc988b39286da1f79d954a0cbe947.jpg', isFeatured: true },
+        { id: 7, name: 'Mechanical Keyboard', price: 4500, stock: 20, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/resource.logitechg.com/ea80d73828311868a607414691db30c4f81679ff.png', isFeatured: true },
+        { id: 8, name: 'Webcam HD', price: 3000, stock: 15, category: 'Cameras', image: 'https://kimi-web-img.kimi.ai/img/prod-cdn.prod.asbis.io/1cf807f0702eee089a09e068f43b3b6c04c66e8f.webp', isFeatured: true }
     ];
 }
 
@@ -488,7 +492,7 @@ let currentSearchTerm = '';
 async function requireAuth() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-        showToast('Please sign in to manage inventory.', 'error');
+        window.location.href = '/login.html';
         return false;
     }
     return true;
@@ -497,14 +501,14 @@ async function requireAuth() {
 // Static fallback products (used if the live backend is unreachable)
 function getInventoryStaticProducts() {
     return [
-        { id: 1, name: 'Wireless Mouse', price: 1200, stock: 25, category: 'Accessories' },
-        { id: 2, name: 'USB-C Cable', price: 500, stock: 60, category: 'Accessories' },
-        { id: 3, name: 'LED Monitor 24 inch', price: 22000, stock: 10, category: 'Monitors' },
-        { id: 4, name: 'Bluetooth Speaker', price: 3500, stock: 40, category: 'Audio' },
-        { id: 5, name: 'Laptop Stand', price: 2500, stock: 30, category: 'Accessories' },
-        { id: 6, name: 'HDMI Cable', price: 800, stock: 100, category: 'Accessories' },
-        { id: 7, name: 'Mechanical Keyboard', price: 4500, stock: 20, category: 'Accessories' },
-        { id: 8, name: 'Webcam HD', price: 3000, stock: 15, category: 'Cameras' }
+        { id: 1, name: 'Wireless Mouse', price: 1200, stock: 25, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/d1gb7gicmr8iau.cloudfront.net/495c9afedb2d75dbdf2593e0258a8b0c6999babc.png' },
+        { id: 2, name: 'USB-C Cable', price: 500, stock: 60, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/media.startech.com/73fe27e5c5650031fdd8deafb8a44e0013d06770.jpg' },
+        { id: 3, name: 'LED Monitor 24 inch', price: 22000, stock: 10, category: 'Monitors', image: 'https://kimi-web-img.kimi.ai/img/evmzone.com/b9aff6315a20365d9122a474515a9125472a38a8.jpg' },
+        { id: 4, name: 'Bluetooth Speaker', price: 3500, stock: 40, category: 'Audio', image: 'https://kimi-web-img.kimi.ai/img/cdn.thewirecutter.com/080dcb6c0c16e2b5e607648ce5bf3207e272e7d3.jpg' },
+        { id: 5, name: 'Laptop Stand', price: 2500, stock: 30, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/m.media-amazon.com/8bed9508a08a8d838c136c416f9045b69889d41e.jpg' },
+        { id: 6, name: 'HDMI Cable', price: 800, stock: 100, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/assets.aten.com/5610ab62b42fc988b39286da1f79d954a0cbe947.jpg' },
+        { id: 7, name: 'Mechanical Keyboard', price: 4500, stock: 20, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/resource.logitechg.com/ea80d73828311868a607414691db30c4f81679ff.png' },
+        { id: 8, name: 'Webcam HD', price: 3000, stock: 15, category: 'Cameras', image: 'https://kimi-web-img.kimi.ai/img/prod-cdn.prod.asbis.io/1cf807f0702eee089a09e068f43b3b6c04c66e8f.webp' }
     ];
 }
 
@@ -532,7 +536,7 @@ async function loadInventory() {
 
     tbody.innerHTML = `
         <tr>
-            <td colspan="6" class="loading-state">
+            <td colspan="7" class="loading-state">
                 <div class="spinner"></div>
                 <p>Loading products...</p>
             </td>
@@ -570,7 +574,7 @@ function renderInventoryTable() {
     if (inventoryProducts.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="empty-state">
+                <td colspan="7" class="empty-state">
                     <p>No products found${currentSearchTerm ? ` for "${currentSearchTerm}"` : ''}.</p>
                 </td>
             </tr>
@@ -581,6 +585,12 @@ function renderInventoryTable() {
     tbody.innerHTML = inventoryProducts.map(product => `
         <tr>
             <td>${product.id}</td>
+            <td>
+                <img src="${product.image || 'https://via.placeholder.com/60x60?text=Product'}" 
+                     alt="${product.name}" 
+                     class="inventory-product-image"
+                     loading="lazy">
+            </td>
             <td class="product-name">${product.name}</td>
             <td><span class="category-badge">${product.category || 'General'}</span></td>
             <td class="price-cell">PKR ${Number(product.price).toLocaleString()}</td>
@@ -748,7 +758,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load inventory dashboard if on inventory page
     if (document.getElementById('productsTableBody')) {
-        loadInventory();
+        // Redirect to login if not authenticated
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (!user) {
+                window.location.href = '/login.html';
+                return;
+            }
+            loadInventory();
+        });
     }
 
     // Trigger navbar state on page load

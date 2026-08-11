@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — E Store</title>
+    <meta name="description" content="Sign in or create an account for the E Store admin inventory.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar sticky">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">⚡</span>
+                E Store
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="blogs.html" class="nav-link">Blogs</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <a href="login.html" class="nav-link active">Login</a>
+                <a href="inventory.html" class="nav-link">Inventory</a>
+            </div>
+            <div class="nav-right">
+                <a href="login.html" class="btn btn-primary btn-small">Login</a>
+                <button class="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-backdrop"></div>
+    <div class="mobile-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="blogs.html" class="nav-link">Blogs</a>
+        <a href="contact.html" class="nav-link">Contact Us</a>
+        <a href="login.html" class="nav-link active">Login</a>
+        <a href="inventory.html" class="nav-link">Inventory</a>
+    </div>
+
+    <!-- ========== LOGIN CARD ========== -->
+    <section class="section" style="min-height: calc(100vh - 200px); display: flex; align-items: center; justify-content: center; padding: 80px 20px;">
+        <div class="container" style="max-width: 440px; width: 100%;">
+            <div style="background: #ffffff; border: 1px solid #E2E8F0; border-radius: 16px; padding: 40px 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+                <!-- Toggle -->
+                <div style="display: flex; background: #F1F5F9; border-radius: 10px; padding: 4px; margin-bottom: 28px;">
+                    <button id="tabSignIn" onclick="switchMode('signin')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; background: #ffffff; color: #0F172A; font-weight: 600; cursor: pointer; font-size: 14px;">Sign In</button>
+                    <button id="tabSignUp" onclick="switchMode('signup')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; background: transparent; color: #64748B; font-weight: 600; cursor: pointer; font-size: 14px;">Sign Up</button>
+                </div>
+
+                <h2 id="formTitle" style="color: #0F172A; font-size: 24px; font-weight: 800; margin-bottom: 4px;">Welcome back</h2>
+                <p style="color: #64748B; font-size: 14px; margin-bottom: 24px;" id="formSubtitle">Sign in to manage your inventory.</p>
+
+                <!-- Error box -->
+                <div id="errorBox" style="display: none; background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px;"></div>
+
+                <form id="authForm" onsubmit="handleAuth(event)">
+                    <div style="margin-bottom: 16px;">
+                        <label for="email" style="display: block; font-size: 13px; font-weight: 600; color: #1E293B; margin-bottom: 6px;">Email</label>
+                        <input type="email" id="email" required placeholder="you@example.com" style="width: 100%; padding: 12px 14px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; box-sizing: border-box;" onfocus="this.style.borderColor='#f97316'" onblur="this.style.borderColor='#CBD5E1'">
+                    </div>
+                    <div style="margin-bottom: 24px;">
+                        <label for="password" style="display: block; font-size: 13px; font-weight: 600; color: #1E293B; margin-bottom: 6px;">Password</label>
+                        <input type="password" id="password" required minlength="6" placeholder="••••••••" style="width: 100%; padding: 12px 14px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; box-sizing: border-box;" onfocus="this.style.borderColor='#f97316'" onblur="this.style.borderColor='#CBD5E1'">
+                    </div>
+                    <button type="submit" id="submitBtn" style="width: 100%; padding: 14px; background: #f97316; color: #ffffff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer;">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+                <p>© 2026 E Store. All rights reserved.</p>
+                <div class="payment-icons">
+                    <span>Visa</span>
+                    <span>Mastercard</span>
+                    <span>PayPal</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script>
+        // ========== SUPABASE CLIENT ==========
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let mode = 'signin';
+
+        // ========== MODE TOGGLE ==========
+        function switchMode(newMode) {
+            mode = newMode;
+            const tabIn = document.getElementById('tabSignIn');
+            const tabUp = document.getElementById('tabSignUp');
+            const title = document.getElementById('formTitle');
+            const subtitle = document.getElementById('formSubtitle');
+            const btn = document.getElementById('submitBtn');
+            const err = document.getElementById('errorBox');
+            err.style.display = 'none';
+
+            if (newMode === 'signup') {
+                tabIn.style.background = 'transparent';
+                tabIn.style.color = '#64748B';
+                tabUp.style.background = '#ffffff';
+                tabUp.style.color = '#0F172A';
+                title.textContent = 'Create account';
+                subtitle.textContent = 'Sign up to manage your inventory.';
+                btn.textContent = 'Sign Up';
+            } else {
+                tabUp.style.background = 'transparent';
+                tabUp.style.color = '#64748B';
+                tabIn.style.background = '#ffffff';
+                tabIn.style.color = '#0F172A';
+                title.textContent = 'Welcome back';
+                subtitle.textContent = 'Sign in to manage your inventory.';
+                btn.textContent = 'Sign In';
+            }
+        }
+
+        // ========== SHOW ERROR ==========
+        function showError(message) {
+            const err = document.getElementById('errorBox');
+            err.textContent = message;
+            err.style.display = 'block';
+        }
+
+        // ========== AUTH HANDLER ==========
+        async function handleAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('submitBtn');
+            const err = document.getElementById('errorBox');
+            err.style.display = 'none';
+
+            btn.textContent = mode === 'signin' ? 'Signing in...' : 'Creating account...';
+            btn.disabled = true;
+
+            try {
+                let result;
+                if (mode === 'signin') {
+                    result = await supabase.auth.signInWithPassword({ email, password });
+                } else {
+                    result = await supabase.auth.signUp({ email, password });
+                }
+
+                const { error } = result;
+                if (error) throw error;
+
+                if (mode === 'signup' && !result.data.session) {
+                    showError('Account created! Please check your email to confirm your account, then sign in.');
+                    switchMode('signin');
+                    return;
+                }
+
+                window.location.href = '/inventory.html';
+            } catch (error) {
+                if (error.message === 'Failed to fetch') {
+                    showError('Network error. Check your connection and try again.');
+                } else if (error.message.includes('Invalid login credentials')) {
+                    showError('Invalid email or password. Please try again.');
+                } else {
+                    showError(error.message);
+                }
+            } finally {
+                btn.textContent = mode === 'signin' ? 'Sign In' : 'Sign Up';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
