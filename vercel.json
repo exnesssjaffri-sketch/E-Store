@@ -14,6 +14,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "frontend/supabase-config.js",
+      "use": "@vercel/static"
+    },
+    {
       "src": "frontend/images/**",
       "use": "@vercel/static"
     },
@@ -78,6 +82,10 @@
     {
       "src": "/script.js",
       "dest": "/frontend/script.js"
+    },
+    {
+      "src": "/supabase-config.js",
+      "dest": "/frontend/supabase-config.js"
     },
     {
       "src": "/images/(.*)",

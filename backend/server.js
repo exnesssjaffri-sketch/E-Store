@@ -1,14 +1,17 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 
-// File paths
-const PRODUCTS_FILE = path.join(__dirname, 'products.json');
-const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
-const BLOGS_FILE = path.join(__dirname, 'blogs.json');
+// ========== SUPABASE CLIENT ==========
+// 👉 Replace YOUR_URL_HERE with your Supabase Project URL
+// 👉 Replace YOUR_KEY_HERE with your Supabase anon/public key
+const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_URL_HERE';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'YOUR_KEY_HERE';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 
 app.use(cors());
@@ -25,53 +28,53 @@ app.get('/inventory', (req, res) => {
 // Serve static frontend files (so Render can host the full site)
 app.use(express.static(FRONTEND_DIR));
 
-// ========== HELPER FUNCTIONS ==========
-function readJSON(filePath) {
-    try {
-        const data = fs.readFileSync(filePath, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        return [];
-    }
-}
-
-// ========== IN-MEMORY STORES (Vercel serverless has read-only filesystem) ==========
-let products = readJSON(PRODUCTS_FILE);
-let reviews = readJSON(REVIEWS_FILE);
-let blogs = readJSON(BLOGS_FILE);
-let nextProductId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-let nextContactId = 1;
-let contacts = [];
-let subscribers = [];
-
 // ========== PRODUCTS API ==========
 // GET /api/products - Get all products (with optional featured filter)
-app.get('/api/products', (req, res) => {
+app.get('/api/products', async (req, res) => {
     const { featured, search, category } = req.query;
-    let result = products;
-    if (featured === 'true') result = result.filter(p => p.isFeatured);
-    if (search) result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
-    if (category) result = result.filter(p => p.category.toLowerCase() === category.toLowerCase());
-    res.json(result);
+    let query = supabase.from('products').select('*');
+
+    if (featured === 'true') query = query.eq('isFeatured', true);
+    if (search) query = query.ilike('name', `%${search}%`);
+    if (category) query = query.eq('category', category);
+
+    const { data, error } = await query.order('id', { ascending: true });
+    if (error) return res.status(500).json({ error: error.message });
+    res.json(data);
 });
 
 // GET /api/products/featured - Get featured products
-app.get('/api/products/featured', (req, res) => {
-    res.json(products.filter(p => p.isFeatured));
+app.get('/api/products/featured', async (req, res) => {
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('isFeatured', true)
+        .order('id', { ascending: true });
+
+    if (error) return res.status(500).json({ error: error.message });
+    res.json(data);
 });
 
 // GET /api/products/:slug - Get single product
-app.get('/api/products/:slug', (req, res) => {
+app.get('/api/products/:slug', async (req, res) => {
     const slug = req.params.slug;
-    const product = products.find(p => p.id === parseInt(slug) || p.name.toLowerCase().replace(/\s+/g, '-') === slug);
-    if (!product) return res.status(404).json({ error: 'Product not found' });
-    res.json(product);
+    const isNumeric = /^\d+$/.test(slug);
+
+    let query = supabase.from('products').select('*');
+    if (isNumeric) {
+        query = query.eq('id', parseInt(slug));
+    } else {
+        query = query.eq('name', slug.replace(/-/g, ' '));
+    }
+
+    const { data, error } = await query.single();
+    if (error) return res.status(404).json({ error: 'Product not found' });
+    res.json(data);
 });
 
 // POST /api/products - Create a new product
-app.post('/api/products', (req, res) => {
+app.post('/api/products', async (req, res) => {
     const newProduct = {
-        id: nextProductId++,
         name: req.body.name,
         price: req.body.price,
         stock: req.body.stock || 0,
@@ -81,75 +84,116 @@ app.post('/api/products', (req, res) => {
         rating: req.body.rating || 0,
         description: req.body.description || ''
     };
-    products.push(newProduct);
-    res.status(201).json(newProduct);
+
+    const { data, error } = await supabase
+        .from('products')
+        .insert([newProduct])
+        .select()
+        .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(201).json(data);
 });
 
 // PUT /api/products/:id - Update product
-app.put('/api/products/:id', (req, res) => {
-    const index = products.findIndex(p => p.id === parseInt(req.params.id));
-    if (index === -1) return res.status(404).json({ error: 'Product not found' });
-    products[index] = { ...products[index], ...req.body, id: parseInt(req.params.id) };
-    res.json(products[index]);
+app.put('/api/products/:id', async (req, res) => {
+    const { data, error } = await supabase
+        .from('products')
+        .update(req.body)
+        .eq('id', parseInt(req.params.id))
+        .select()
+        .single();
+
+    if (error) return res.status(404).json({ error: 'Product not found' });
+    res.json(data);
 });
 
 // DELETE /api/products/:id - Delete product
-app.delete('/api/products/:id', (req, res) => {
-    const filtered = products.filter(p => p.id !== parseInt(req.params.id));
-    if (filtered.length === products.length) return res.status(404).json({ error: 'Product not found' });
-    products = filtered;
+app.delete('/api/products/:id', async (req, res) => {
+    const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', parseInt(req.params.id));
+
+    if (error) return res.status(404).json({ error: 'Product not found' });
     res.json({ message: 'Product deleted successfully' });
 });
 
 // ========== REVIEWS API ==========
-app.get('/api/reviews', (req, res) => {
+app.get('/api/reviews', async (req, res) => {
     const { featured } = req.query;
-    let result = reviews;
-    if (featured === 'true') result = result.filter(r => r.isFeatured);
-    res.json(result.sort((a, b) => a.order - b.order));
+    let query = supabase.from('reviews').select('*');
+
+    if (featured === 'true') query = query.eq('isFeatured', true);
+
+    const { data, error } = await query.order('order', { ascending: true });
+    if (error) return res.status(500).json({ error: error.message });
+    res.json(data);
 });
 
 // ========== BLOGS API ==========
-app.get('/api/blogs', (req, res) => {
+app.get('/api/blogs', async (req, res) => {
     const { category, limit } = req.query;
-    let result = blogs;
-    if (category) result = result.filter(b => b.category === category);
-    if (limit) result = result.slice(0, parseInt(limit));
-    res.json(result);
+    let query = supabase.from('blogs').select('*');
+
+    if (category) query = query.eq('category', category);
+    if (limit) query = query.limit(parseInt(limit));
+
+    const { data, error } = await query.order('id', { ascending: true });
+    if (error) return res.status(500).json({ error: error.message });
+    res.json(data);
 });
 
-app.get('/api/blogs/:slug', (req, res) => {
-    const blog = blogs.find(b => b.slug === req.params.slug);
-    if (!blog) return res.status(404).json({ error: 'Blog not found' });
-    res.json(blog);
+app.get('/api/blogs/:slug', async (req, res) => {
+    const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('slug', req.params.slug)
+        .single();
+
+    if (error) return res.status(404).json({ error: 'Blog not found' });
+    res.json(data);
 });
 
 // ========== CONTACT FORM API ==========
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
     const { fullName, email, phone, subject, message } = req.body;
     if (!fullName || !email || !subject || !message) {
         return res.status(400).json({ error: 'Required fields: fullName, email, subject, message' });
     }
     if (fullName.length < 2) return res.status(400).json({ error: 'Name must be at least 2 characters' });
     if (message.length < 10) return res.status(400).json({ error: 'Message must be at least 10 characters' });
-    const newContact = {
-        id: nextContactId++,
-        fullName, email, phone, subject, message,
-        isRead: false,
-        createdAt: new Date().toISOString()
-    };
-    contacts.push(newContact);
+
+    const { error } = await supabase
+        .from('contact_messages')
+        .insert([{ fullName, email, phone, subject, message }]);
+
+    if (error) return res.status(500).json({ error: error.message });
     res.status(201).json({ message: 'Thank you! We will get back to you within 24 hours.' });
 });
 
 // ========== NEWSLETTER SUBSCRIPTION API ==========
-app.post('/api/newsletter/subscribe', (req, res) => {
+app.post('/api/newsletter/subscribe', async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email is required' });
-    if (subscribers.find(s => s.email === email)) {
+
+    // Check if already subscribed
+    const { data: existing, error: checkError } = await supabase
+        .from('subscribers')
+        .select('email')
+        .eq('email', email);
+
+    if (checkError) return res.status(500).json({ error: checkError.message });
+
+    if (existing && existing.length > 0) {
         return res.status(409).json({ error: 'You are already subscribed!' });
     }
-    subscribers.push({ email, subscribedAt: new Date().toISOString() });
+
+    const { error } = await supabase
+        .from('subscribers')
+        .insert([{ email }]);
+
+    if (error) return res.status(500).json({ error: error.message });
     res.status(201).json({ message: 'Successfully subscribed to our newsletter!' });
 });
 

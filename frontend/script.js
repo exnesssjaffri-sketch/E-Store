@@ -1,15 +1,10 @@
-// ========== E-STORE - GLOBAL SCRIPT ==========
-// Pattern: Frontend → Fetch API → Backend → JSON Data
+// ========== E-STORE - GLOBAL SCRIPT (Supabase Version) ==========
+// Pattern: Frontend → Supabase Client → PostgreSQL Database
 
-const API_BASE = window.location.hostname === 'localhost' 
-    ? 'http://localhost:5000/api' 
-    : '/api';
-
-// Live backend on Render (used by Inventory Dashboard)
-// Use same-origin when on Render, otherwise fall back to the Render URL
-const LIVE_API_BASE = window.location.hostname.includes('onrender.com') 
-    ? '/api' 
-    : 'https://e-store-b54f.onrender.com/api';
+// ========== SUPABASE CLIENT SETUP ==========
+const supabaseUrl = SUPABASE_URL;
+const supabaseKey = SUPABASE_ANON_KEY;
+window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 // ========== TOAST NOTIFICATION ==========
 function showToast(message, type = 'success') {
@@ -19,19 +14,6 @@ function showToast(message, type = 'success') {
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
-}
-
-// ========== API HELPER ==========
-async function apiRequest(endpoint, options = {}) {
-    const url = `${API_BASE}${endpoint}`;
-    const config = {
-        headers: { 'Content-Type': 'application/json', ...options.headers },
-        ...options
-    };
-    const response = await fetch(url, config);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || data.message || 'Something went wrong');
-    return data;
 }
 
 // ========== NAVBAR ==========
@@ -116,10 +98,14 @@ async function loadFeaturedProducts(containerId = 'featuredProducts') {
     container.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Products loading...</p></div>`;
 
     try {
-        const data = await apiRequest('/products/featured');
-        const products = Array.isArray(data) ? data : (data.data || data.products || []);
+        const { data: products, error } = await supabase
+            .from('products')
+            .select('*')
+            .eq('isFeatured', true);
+
+        if (error) throw error;
         
-        if (products.length === 0) {
+        if (!products || products.length === 0) {
             container.innerHTML = '<div class="empty-state"><p>No featured products available.</p></div>';
             return;
         }
@@ -134,7 +120,7 @@ async function loadFeaturedProducts(containerId = 'featuredProducts') {
                 </div>
                 <div class="product-info">
                     <h3>${product.name}</h3>
-                    <p class="price">PKR ${product.price.toLocaleString()}</p>
+                    <p class="price">PKR ${Number(product.price).toLocaleString()}</p>
                     <button class="btn btn-primary btn-small" onclick="addToCart(${product.id})">
                         Add to Cart
                     </button>
@@ -186,10 +172,15 @@ async function loadReviews(containerId = 'reviewsContainer') {
     container.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Loading reviews...</p></div>`;
 
     try {
-        const data = await apiRequest('/reviews?featured=true');
-        const reviews = Array.isArray(data) ? data : (data.data || data.reviews || []);
+        const { data: reviews, error } = await supabase
+            .from('reviews')
+            .select('*')
+            .eq('isFeatured', true)
+            .order('order', { ascending: true });
+
+        if (error) throw error;
         
-        if (reviews.length === 0) {
+        if (!reviews || reviews.length === 0) {
             container.innerHTML = '<div class="empty-state"><p>No reviews yet.</p></div>';
             return;
         }
@@ -234,10 +225,14 @@ async function loadBlogs(containerId = 'blogsContainer') {
     container.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Loading blogs...</p></div>`;
 
     try {
-        const data = await apiRequest('/blogs?limit=10');
-        const blogs = Array.isArray(data) ? data : (data.data || data.blogs || []);
+        const { data: blogs, error } = await supabase
+            .from('blogs')
+            .select('*')
+            .limit(10);
+
+        if (error) throw error;
         
-        if (blogs.length === 0) {
+        if (!blogs || blogs.length === 0) {
             container.innerHTML = '<div class="empty-state"><p>No blog posts available yet.</p></div>';
             return;
         }
@@ -404,10 +399,11 @@ function initContactForm() {
         submitBtn.disabled = true;
 
         try {
-            await apiRequest('/contact', {
-                method: 'POST',
-                body: JSON.stringify({ fullName, email, phone, subject, message })
-            });
+            const { error } = await supabase
+                .from('contact_messages')
+                .insert([{ fullName, email, phone, subject, message }]);
+
+            if (error) throw error;
             
             if (successMsg) {
                 successMsg.textContent = 'Thank you! We will get back to you within 24 hours.';
@@ -443,18 +439,27 @@ function initNewsletterForms() {
             submitBtn.disabled = true;
 
             try {
-                await apiRequest('/newsletter/subscribe', {
-                    method: 'POST',
-                    body: JSON.stringify({ email })
-                });
-                showToast('Successfully subscribed to our newsletter!', 'success');
-                emailInput.value = '';
-            } catch (error) {
-                if (error.message.includes('already subscribed')) {
+                // Check if already subscribed
+                const { data: existing, error: checkError } = await supabase
+                    .from('subscribers')
+                    .select('email')
+                    .eq('email', email);
+
+                if (checkError) throw checkError;
+
+                if (existing && existing.length > 0) {
                     showToast('You are already subscribed!', 'info');
                 } else {
-                    showToast('Error: ' + error.message, 'error');
+                    const { error } = await supabase
+                        .from('subscribers')
+                        .insert([{ email }]);
+
+                    if (error) throw error;
+                    showToast('Successfully subscribed to our newsletter!', 'success');
+                    emailInput.value = '';
                 }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
             } finally {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
@@ -479,6 +484,16 @@ function addToCart(productId) {
 let inventoryProducts = [];
 let currentSearchTerm = '';
 
+// Check if user is authenticated (for write operations)
+async function requireAuth() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        showToast('Please sign in to manage inventory.', 'error');
+        return false;
+    }
+    return true;
+}
+
 // Static fallback products (used if the live backend is unreachable)
 function getInventoryStaticProducts() {
     return [
@@ -493,37 +508,6 @@ function getInventoryStaticProducts() {
     ];
 }
 
-// Fetch with timeout + automatic retry (handles Render cold starts)
-async function fetchWithRetry(url, options = {}, retries = 3, timeoutMs = 15000) {
-    let lastError;
-    for (let attempt = 0; attempt <= retries; attempt++) {
-        try {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), timeoutMs);
-            try {
-                const response = await fetch(url, { ...options, signal: controller.signal });
-                if (!response.ok) throw new Error(`Server responded with ${response.status}`);
-                return await response.json();
-            } finally {
-                clearTimeout(timer);
-            }
-        } catch (error) {
-            lastError = error;
-            if (attempt < retries) {
-                // Wait before retrying (backoff: 2s, 4s, 8s)
-                await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
-            }
-        }
-    }
-    throw lastError;
-}
-
-// Fetch products from live Render backend with retry
-async function fetchInventoryProducts() {
-    const url = `${LIVE_API_BASE}/products${currentSearchTerm ? `?search=${encodeURIComponent(currentSearchTerm)}` : ''}`;
-    return fetchWithRetry(url);
-}
-
 // Show warning banner (keeps static data visible)
 function renderInventoryError(message) {
     const toolbar = document.querySelector('.inventory-toolbar');
@@ -536,7 +520,7 @@ function renderInventoryError(message) {
     banner.style.cssText = 'background: #FEF3C7; color: #92400E; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;';
     banner.innerHTML = `
         <span>⚠️ ${message}</span>
-        <button class="btn btn-small" style="background: #92400E; color: white;" onclick="loadInventory()">Retry Live</button>
+        <button class="btn btn-small" style="background: #92400E; color: white;" onclick="loadInventory()">Retry</button>
     `;
     toolbar.after(banner);
 }
@@ -550,14 +534,22 @@ async function loadInventory() {
         <tr>
             <td colspan="6" class="loading-state">
                 <div class="spinner"></div>
-                <p>Loading products... (server may take a moment to wake up)</p>
+                <p>Loading products...</p>
             </td>
         </tr>
     `;
 
     try {
-        inventoryProducts = await fetchInventoryProducts();
-        if (!Array.isArray(inventoryProducts)) inventoryProducts = [];
+        let query = supabase.from('products').select('*');
+        
+        if (currentSearchTerm) {
+            query = query.ilike('name', `%${currentSearchTerm}%`);
+        }
+
+        const { data, error } = await query.order('id', { ascending: true });
+        if (error) throw error;
+        
+        inventoryProducts = data || [];
         renderInventoryTable();
         updateInventoryStats();
     } catch (error) {
@@ -566,7 +558,7 @@ async function loadInventory() {
         inventoryProducts = getInventoryStaticProducts();
         renderInventoryTable();
         updateInventoryStats();
-        renderInventoryError('Showing sample data. The live server is unreachable. Try again.')
+        renderInventoryError('Showing sample data. Supabase connection failed. Check your config.')
     }
 }
 
@@ -591,7 +583,7 @@ function renderInventoryTable() {
             <td>${product.id}</td>
             <td class="product-name">${product.name}</td>
             <td><span class="category-badge">${product.category || 'General'}</span></td>
-            <td class="price-cell">$${Number(product.price).toFixed(2)}</td>
+            <td class="price-cell">PKR ${Number(product.price).toLocaleString()}</td>
             <td class="stock-cell ${product.stock <= 10 ? 'stock-low' : 'stock-ok'}">${product.stock}</td>
             <td>
                 <div class="action-btns">
@@ -613,7 +605,7 @@ function updateInventoryStats() {
     document.getElementById('totalProducts').textContent = totalProducts;
     document.getElementById('totalCategories').textContent = categories;
     document.getElementById('totalStock').textContent = totalStock;
-    document.getElementById('totalValue').textContent = `$${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById('totalValue').textContent = `PKR ${totalValue.toLocaleString()}`;
 }
 
 // Search products
@@ -675,10 +667,15 @@ function editProduct(id) {
 // Delete product
 async function deleteProduct(id) {
     if (!confirm('Are you sure you want to delete this product?')) return;
+    if (!await requireAuth()) return;
 
     try {
-        const response = await fetch(`${LIVE_API_BASE}/products/${id}`, { method: 'DELETE' });
-        if (!response.ok) throw new Error('Failed to delete product');
+        const { error } = await supabase
+            .from('products')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
         showToast('Product deleted successfully!', 'success');
         loadInventory();
     } catch (error) {
@@ -689,6 +686,7 @@ async function deleteProduct(id) {
 // Save product (create or update)
 async function saveProduct(event) {
     event.preventDefault();
+    if (!await requireAuth()) return;
 
     const id = document.getElementById('productId').value;
     const productData = {
@@ -707,23 +705,25 @@ async function saveProduct(event) {
     saveBtn.disabled = true;
 
     try {
-        const url = id 
-            ? `${LIVE_API_BASE}/products/${id}`
-            : `${LIVE_API_BASE}/products`;
-        const method = id ? 'PUT' : 'POST';
+        if (id) {
+            // UPDATE
+            const { error } = await supabase
+                .from('products')
+                .update(productData)
+                .eq('id', id);
 
-        const response = await fetch(url, {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productData)
-        });
+            if (error) throw error;
+            showToast('Product updated successfully!', 'success');
+        } else {
+            // INSERT
+            const { error } = await supabase
+                .from('products')
+                .insert([productData]);
 
-        if (!response.ok) {
-            const err = await response.json().catch(() => ({}));
-            throw new Error(err.error || 'Failed to save product');
+            if (error) throw error;
+            showToast('Product added successfully!', 'success');
         }
 
-        showToast(id ? 'Product updated successfully!' : 'Product added successfully!', 'success');
         closeProductModal();
         loadInventory();
     } catch (error) {
