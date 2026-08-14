@@ -760,16 +760,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadReviews();
     loadBlogs();
 
-    // Load inventory dashboard if on inventory page
+    // Load inventory dashboard if on inventory page (publicly accessible)
     if (document.getElementById('productsTableBody')) {
-        // Redirect to login if not authenticated
-        supabase.auth.getUser().then(({ data: { user } }) => {
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
-            loadInventory();
-        });
+        loadInventory();
     }
 
     // Trigger navbar state on page load
