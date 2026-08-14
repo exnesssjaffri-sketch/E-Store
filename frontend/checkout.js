@@ -1,31 +1,36 @@
 // ========== E-STORE CHECKOUT (Supabase Orders) ==========
+console.log('checkout.js loaded');
+
 const DELIVERY_FEE = 200;
 const ORDERS_STORAGE_KEY = 'e-store-orders';
 let supabase = null;
 
-// Initialize Supabase defensively — cart totals are local and must work even if Supabase fails
-try {
-    if (window.supabase && typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } else {
-        console.warn('Supabase not available — checkout will work with local cart only.');
-    }
-} catch (e) {
-    console.warn('Supabase init failed:', e);
-}
-
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Safe supabase init — never crash if Supabase is unavailable
+    try {
+        if (window.supabase && typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } else {
+            console.warn('Supabase not available — checkout will work with local cart only.');
+        }
+    } catch (e) {
+        console.warn('Supabase init failed:', e);
+    }
+
+    // 2. Get cart (defensive)
+    const cart = (typeof getCart === 'function') ? getCart() : [];
+    console.log('DOMContentLoaded fired, cart:', cart);
     const layout = document.getElementById('checkoutLayout');
     const emptyState = document.getElementById('checkoutEmpty');
-    const cart = getCart();
 
-    // Show empty state if cart is empty
-    if (cart.length === 0) {
-        layout.style.display = 'none';
-        emptyState.style.display = 'block';
+    // 3. Empty cart check
+    if (!cart || cart.length === 0) {
+        if (layout) layout.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'block';
         return;
     }
 
+    // 4. Render order summary
     renderOrderSummary();
 
     // Payment method toggle
@@ -33,33 +38,54 @@ document.addEventListener('DOMContentLoaded', () => {
         radio.addEventListener('change', (e) => {
             document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
             e.target.closest('.payment-option').classList.add('selected');
-            document.getElementById('cardFields').classList.toggle('show', e.target.value === 'card');
+            const cardFields = document.getElementById('cardFields');
+            if (cardFields) cardFields.classList.toggle('show', e.target.value === 'card');
         });
     });
 
-    document.getElementById('checkoutForm').addEventListener('submit', placeOrder);
+    const checkoutForm = document.getElementById('checkoutForm');
+    if (checkoutForm) checkoutForm.addEventListener('submit', placeOrder);
 });
 
 function renderOrderSummary() {
-    const cart = getCart();
+    const cart = (typeof getCart === 'function') ? getCart() : [];
     const itemsContainer = document.getElementById('orderSummaryItems');
 
-    // Calculate subtotal manually — do not rely only on getCartTotal()
-    const subtotal = cart.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
+    // === MANUAL SUBTOTAL CALCULATION (bulletproof) ===
+    const subtotal = cart.reduce((sum, item) => {
+        const price = Number(item.price || 0);
+        const qty = Number(item.quantity || 1);
+        return sum + (price * qty);
+    }, 0);
+
     const deliveryFee = DELIVERY_FEE;
     const grandTotal = subtotal + deliveryFee;
 
-    itemsContainer.innerHTML = cart.map(item => `
-        <div class="order-summary-item">
-            <span class="os-name">${item.name}</span>
-            <span class="os-qty">× ${item.quantity}</span>
-            <span class="os-price">PKR ${(Number(item.price || 0) * (item.quantity || 1)).toLocaleString()}</span>
-        </div>
-    `).join('');
+    // === UPDATE DOM ELEMENTS BY ID ===
+    const subtotalEl = document.getElementById('summarySubtotal');
+    const deliveryEl = document.getElementById('summaryDeliveryFee');
+    const grandTotalEl = document.getElementById('summaryGrandTotal');
 
-    document.getElementById('summarySubtotal').textContent = `PKR ${subtotal.toLocaleString()}`;
-    document.getElementById('summaryDeliveryFee').textContent = `PKR ${deliveryFee.toLocaleString()}`;
-    document.getElementById('summaryGrandTotal').textContent = `PKR ${grandTotal.toLocaleString()}`;
+    if (subtotalEl) subtotalEl.textContent = `PKR ${subtotal.toLocaleString()}`;
+    if (deliveryEl) deliveryEl.textContent = `PKR ${deliveryFee.toLocaleString()}`;
+    if (grandTotalEl) grandTotalEl.textContent = `PKR ${grandTotal.toLocaleString()}`;
+
+    // === RENDER CART ITEMS LIST ===
+    if (itemsContainer) {
+        if (cart.length === 0) {
+            itemsContainer.innerHTML = '<p class="text-gray-500">No items in cart.</p>';
+        } else {
+            itemsContainer.innerHTML = cart.map(item => `
+                <div class="order-summary-item">
+                    <span class="os-name">${item.name}</span>
+                    <span class="os-qty">× ${item.quantity || 1}</span>
+                    <span class="os-price">PKR ${(Number(item.price || 0) * Number(item.quantity || 1)).toLocaleString()}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    console.log('Checkout rendered:', { subtotal, deliveryFee, grandTotal, cart });
 }
 
 function saveOrderLocally(order) {
@@ -103,7 +129,7 @@ async function placeOrder(e) {
         }
     }
 
-    const cart = getCart();
+    const cart = (typeof getCart === 'function') ? getCart() : [];
     const subtotal = cart.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
     const totalAmount = subtotal + DELIVERY_FEE;
 
@@ -139,15 +165,19 @@ async function placeOrder(e) {
             });
         }
 
-        clearCart();
+        if (typeof clearCart === 'function') clearCart();
         form.reset();
-        document.getElementById('checkoutLayout').style.display = 'none';
-        document.getElementById('checkoutEmpty').innerHTML = `
-            <h3>Order Placed Successfully! 🎉</h3>
-            <p>Thank you, ${fullName}. Your order has been received and will be processed soon.</p>
-            <a href="index.html" class="btn btn-primary">Continue Shopping</a>
-        `;
-        document.getElementById('checkoutEmpty').style.display = 'block';
+        const layout = document.getElementById('checkoutLayout');
+        const emptyState = document.getElementById('checkoutEmpty');
+        if (layout) layout.style.display = 'none';
+        if (emptyState) {
+            emptyState.innerHTML = `
+                <h3>Order Placed Successfully! 🎉</h3>
+                <p>Thank you, ${fullName}. Your order has been received and will be processed soon.</p>
+                <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+            `;
+            emptyState.style.display = 'block';
+        }
         showCartToast('Order Placed Successfully!');
     } catch (error) {
         console.error('Order failed:', error);
