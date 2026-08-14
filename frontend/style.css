@@ -1778,3 +1778,104 @@ textarea:focus-visible {
     gap: 12px;
     margin-top: 24px;
 }
+
+/* ========== OUR JOURNEY SECTION ========== */
+.our-journey-section {
+    padding: 80px 0;
+    background-color: var(--color-white);
+}
+
+.journey-image-wrapper {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.journey-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    max-height: 400px;
+}
+
+.journey-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.journey-content h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin-bottom: 1.5rem;
+}
+
+.journey-content p {
+    color: var(--color-text-secondary);
+    margin-bottom: 1.25rem;
+    line-height: 1.8;
+}
+
+/* ========== JOURNEY STATS ROW ========== */
+.journey-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+}
+
+.journey-stat-card {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: transform var(--transition-fast) ease-in-out, box-shadow var(--transition-fast) ease-in-out;
+}
+
+.journey-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.journey-stat-card h3 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+}
+
+.journey-stat-card p {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .our-journey-section {
+        padding: 60px 0;
+    }
+
+    .journey-content h2 {
+        font-size: 1.6rem;
+    }
+
+    .journey-stats-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 36px;
+    }
+
+    .journey-stat-card {
+        padding: 24px 16px;
+    }
+
+    .journey-stat-card h3 {
+        font-size: 1.8rem;
+    }
+}
