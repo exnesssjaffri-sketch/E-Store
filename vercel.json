@@ -58,6 +58,14 @@
       "dest": "/frontend/inventory.html"
     },
     {
+      "src": "/products",
+      "dest": "/frontend/products.html"
+    },
+    {
+      "src": "/products.html",
+      "dest": "/frontend/products.html"
+    },
+    {
       "src": "/checkout",
       "dest": "/frontend/checkout.html"
     },
@@ -80,6 +88,10 @@
     {
       "src": "/cart.js",
       "dest": "/frontend/cart.js"
+    },
+    {
+      "src": "/products.js",
+      "dest": "/frontend/products.js"
     },
     {
       "src": "/checkout.js",
