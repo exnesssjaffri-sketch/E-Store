@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog — Insights on Online Shopping & E Store</title>
-    <meta name="description" content="Read the latest from E Store about online shopping trends, customer experiences, and how we're making electronics shopping simpler for everyone.">
+    <title>Products — E Store</title>
+    <meta name="description" content="Browse every product available at E Store. From laptops to accessories, find the best electronics at trusted prices.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,16 +21,14 @@
             </a>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="products.html" class="nav-link">Products</a>
+                <a href="products.html" class="nav-link active">Products</a>
                 <a href="about.html" class="nav-link">About Us</a>
                 <a href="services.html" class="nav-link">Services</a>
-                <a href="blogs.html" class="nav-link active">Blogs</a>
+                <a href="blogs.html" class="nav-link">Blogs</a>
                 <a href="contact.html" class="nav-link">Contact Us</a>
-                <a href="login.html" class="nav-link">Login</a>
                 <a href="inventory.html" class="nav-link">Inventory</a>
             </div>
             <div class="nav-right">
-                <a href="login.html" class="btn btn-primary btn-small">Login</a>
                 <a href="inventory.html" class="btn btn-primary btn-small">Inventory</a>
                 <button class="hamburger" aria-label="Toggle menu">
                     <span></span>
@@ -45,41 +43,31 @@
     <div class="mobile-menu-backdrop"></div>
     <div class="mobile-menu">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="products.html" class="nav-link">Products</a>
+        <a href="products.html" class="nav-link active">Products</a>
         <a href="about.html" class="nav-link">About Us</a>
         <a href="services.html" class="nav-link">Services</a>
-        <a href="blogs.html" class="nav-link active">Blogs</a>
+        <a href="blogs.html" class="nav-link">Blogs</a>
         <a href="contact.html" class="nav-link">Contact Us</a>
-        <a href="login.html" class="nav-link">Login</a>
         <a href="inventory.html" class="nav-link">Inventory</a>
     </div>
 
     <!-- ========== PAGE HEADER ========== -->
     <section class="page-header">
         <div class="container">
-            <h1>Our Blog</h1>
-            <p>Insights, stories, and updates from E Store.</p>
+            <p class="breadcrumb"><a href="index.html">Home</a> > Products</p>
+            <h1>All Products</h1>
         </div>
     </section>
 
-    <!-- ========== BLOG POSTS ========== -->
-    <section class="section">
+    <!-- ========== PRODUCTS SECTION ========== -->
+    <section class="section products-section">
         <div class="container">
-            <div class="grid-2" id="blogsContainer">
-                <!-- Dynamically loaded from API -->
+            <div class="product-filters" id="productFilters">
+                <!-- Category filters injected by JS -->
             </div>
-        </div>
-    </section>
-
-    <!-- ========== NEWSLETTER SECTION ========== -->
-    <section class="newsletter-section">
-        <div class="container">
-            <h2>Stay Updated with Latest Electronics</h2>
-            <p>Subscribe for exclusive deals and new arrivals.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email address" required>
-                <button type="submit">Subscribe</button>
-            </form>
+            <div id="productsGrid" class="products-grid grid-4">
+                <!-- Products injected here by JS -->
+            </div>
         </div>
     </section>
 
@@ -101,6 +89,7 @@
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="services.html">Services</a></li>
                         <li><a href="blogs.html">Blogs</a></li>
@@ -141,5 +130,6 @@
     <script src="supabase-config.js"></script>
     <script src="cart.js"></script>
     <script src="script.js"></script>
+    <script src="products.js"></script>
 </body>
 </html>

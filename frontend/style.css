@@ -1348,6 +1348,57 @@ h3 {
     color: var(--color-text-secondary);
 }
 
+/* ========== PRODUCTS PAGE ========== */
+.products-section {
+    padding-top: 64px;
+}
+
+.product-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.filter-btn {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-main);
+    cursor: pointer;
+    transition: all var(--transition-fast) ease-in-out;
+}
+
+.filter-btn:hover {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+}
+
+.filter-btn.active {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--color-white);
+}
+
+.product-stock {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.product-stock.in-stock {
+    color: var(--color-success);
+}
+
+.product-stock.out-of-stock {
+    color: var(--color-error);
+}
+
+.product-info .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* ========== RESPONSIVE ADJUSTMENTS ========== */
 @media (max-width: 639px) {
     .hero-content .hero-cta {
