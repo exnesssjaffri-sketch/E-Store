@@ -1,8 +1,18 @@
 // ========== E-STORE CHECKOUT (Supabase Orders) ==========
 const DELIVERY_FEE = 200;
+const ORDERS_STORAGE_KEY = 'e-store-orders';
+let supabase = null;
 
-// Create Supabase client (script.js is not loaded on checkout page)
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Initialize Supabase defensively — cart totals are local and must work even if Supabase fails
+try {
+    if (window.supabase && typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } else {
+        console.warn('Supabase not available — checkout will work with local cart only.');
+    }
+} catch (e) {
+    console.warn('Supabase init failed:', e);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const layout = document.getElementById('checkoutLayout');
@@ -33,18 +43,33 @@ document.addEventListener('DOMContentLoaded', () => {
 function renderOrderSummary() {
     const cart = getCart();
     const itemsContainer = document.getElementById('orderSummaryItems');
-    const subtotal = getCartTotal();
+
+    // Calculate subtotal manually — do not rely only on getCartTotal()
+    const subtotal = cart.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
+    const deliveryFee = DELIVERY_FEE;
+    const grandTotal = subtotal + deliveryFee;
 
     itemsContainer.innerHTML = cart.map(item => `
         <div class="order-summary-item">
             <span class="os-name">${item.name}</span>
             <span class="os-qty">× ${item.quantity}</span>
-            <span class="os-price">PKR ${(Number(item.price) * item.quantity).toLocaleString()}</span>
+            <span class="os-price">PKR ${(Number(item.price || 0) * (item.quantity || 1)).toLocaleString()}</span>
         </div>
     `).join('');
 
     document.getElementById('summarySubtotal').textContent = `PKR ${subtotal.toLocaleString()}`;
-    document.getElementById('summaryGrandTotal').textContent = `PKR ${(subtotal + DELIVERY_FEE).toLocaleString()}`;
+    document.getElementById('summaryDeliveryFee').textContent = `PKR ${deliveryFee.toLocaleString()}`;
+    document.getElementById('summaryGrandTotal').textContent = `PKR ${grandTotal.toLocaleString()}`;
+}
+
+function saveOrderLocally(order) {
+    try {
+        const orders = JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY)) || [];
+        orders.push(order);
+        localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+    } catch (e) {
+        console.error('Failed to save order locally:', e);
+    }
 }
 
 async function placeOrder(e) {
@@ -79,7 +104,7 @@ async function placeOrder(e) {
     }
 
     const cart = getCart();
-    const subtotal = getCartTotal();
+    const subtotal = cart.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
     const totalAmount = subtotal + DELIVERY_FEE;
 
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -88,20 +113,31 @@ async function placeOrder(e) {
     submitBtn.disabled = true;
 
     try {
-        const { error } = await supabase
-            .from('orders')
-            .insert([{
-                full_name: fullName,
-                phone: phone,
-                email: email,
-                address: address,
-                payment_method: paymentMethod,
-                items: cart,
-                total_amount: totalAmount,
-                status: 'pending'
-            }]);
+        const orderData = {
+            full_name: fullName,
+            phone: phone,
+            email: email,
+            address: address,
+            payment_method: paymentMethod,
+            items: cart,
+            total_amount: totalAmount,
+            status: 'pending'
+        };
 
-        if (error) throw error;
+        if (supabase) {
+            const { error } = await supabase
+                .from('orders')
+                .insert([orderData]);
+
+            if (error) throw error;
+        } else {
+            // Fallback: save order locally if Supabase is unavailable
+            console.warn('Supabase unavailable — saving order locally');
+            saveOrderLocally({
+                ...orderData,
+                created_at: new Date().toISOString()
+            });
+        }
 
         clearCart();
         form.reset();
