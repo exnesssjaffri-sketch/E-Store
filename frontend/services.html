@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Our Services — What E Store Offers</title>
     <meta name="description" content="Explore E Store's services including online shopping, home delivery, secure payments, order tracking, returns, and 24/7 customer support.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,15 +13,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cart.css">
+    <link rel="stylesheet" href="mobile.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- ========== NAVBAR ========== -->
-    <nav class="navbar sticky">
+    <nav class="navbar sticky" aria-label="Main navigation">
         <div class="container">
-            <a href="index.html" class="nav-logo">
+            <a href="index.html" class="nav-logo" aria-label="E Store Home">
                 <span class="logo-icon">⚡</span>
                 E Store
             </a>
+            <div class="navbar-search" role="search">
+                <input type="search" placeholder="Search products..." aria-label="Search products">
+            </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="products.html" class="nav-link">Products</a>
@@ -30,9 +39,18 @@
                 <a href="inventory.html" class="nav-link">Inventory</a>
             </div>
             <div class="nav-right">
+                <div class="language-toggle" aria-label="Language selector">
+                    <span>🌐</span>
+                    <span>EN</span>
+                    <div class="language-dropdown">
+                        <button data-lang="en" class="active">English</button>
+                        <button data-lang="ur">اردو</button>
+                        <button data-lang="ar">العربية</button>
+                    </div>
+                </div>
                 <a href="login.html" class="btn btn-primary btn-small">Login</a>
                 <a href="inventory.html" class="btn btn-primary btn-small">Inventory</a>
-                <button class="hamburger" aria-label="Toggle menu">
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -41,9 +59,12 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu - Complete site structure with ALL features -->
     <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu">
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+        <div class="mobile-menu-search" role="search">
+            <input type="search" placeholder="Search products..." aria-label="Search products">
+        </div>
         <a href="index.html" class="nav-link">Home</a>
         <a href="products.html" class="nav-link">Products</a>
         <a href="about.html" class="nav-link">About Us</a>
@@ -52,67 +73,82 @@
         <a href="contact.html" class="nav-link">Contact Us</a>
         <a href="login.html" class="nav-link">Login</a>
         <a href="inventory.html" class="nav-link">Inventory</a>
-    </div>
-
-    <!-- ========== PAGE HEADER ========== -->
-    <section class="page-header">
-        <div class="container">
-            <h1>Our Services</h1>
-            <p>Everything you need for a smooth shopping experience.</p>
-        </div>
-    </section>
-
-    <!-- ========== SERVICES GRID ========== -->
-    <section class="section">
-        <div class="container">
-            <div class="grid-3">
-                <div class="service-card reveal reveal-delay-1">
-                    <div class="icon">🛒</div>
-                    <h3>Online Shopping</h3>
-                    <p>Shop from the comfort of your home and find a wide range of products in one place. We try to keep the shopping process simple, so you can find what you need without any hassle.</p>
-                </div>
-                <div class="service-card reveal reveal-delay-2">
-                    <div class="icon">🚚</div>
-                    <h3>Home Delivery</h3>
-                    <p>Once you place your order, we work to get it delivered to your provided address safely and on time. You can sit back and wait for your order to arrive at your doorstep.</p>
-                </div>
-                <div class="service-card reveal reveal-delay-3">
-                    <div class="icon">💳</div>
-                    <h3>Easy & Secure Payment</h3>
-                    <p>We aim to make paying for your order as easy and convenient as possible. Different payment options are available so you can choose the one that works best for you.</p>
-                </div>
-                <div class="service-card reveal reveal-delay-1">
-                    <div class="icon">📦</div>
-                    <h3>Order Tracking</h3>
-                    <p>You don't have to keep wondering where your order is. Our order tracking service lets you check the progress of your order and stay updated until it reaches you.</p>
-                </div>
-                <div class="service-card reveal reveal-delay-2">
-                    <div class="icon">🔄</div>
-                    <h3>Return & Exchange</h3>
-                    <p>Sometimes a product may not be what you expected, and we understand that. For eligible products, we provide return and exchange options according to our store policy.</p>
-                </div>
-                <div class="service-card reveal reveal-delay-3">
-                    <div class="icon">💬</div>
-                    <h3>Customer Support</h3>
-                    <p>If you have a question about a product, order, or delivery, our customer support is here to help. We believe customers should be able to get a clear answer when they need one.</p>
-                </div>
-                <div class="service-card reveal reveal-delay-1" style="grid-column: 1 / -1; max-width: 400px; margin: 0 auto; width: 100%;">
-                    <div class="icon">🎁</div>
-                    <h3>Gift & Product Selection</h3>
-                    <p>Not sure what to buy? We can help you explore different products and find something that fits your needs, whether it's for yourself or someone special.</p>
+        <div class="mobile-menu-actions">
+            <div class="language-toggle" aria-label="Language selector">
+                <span>🌐</span>
+                <span>EN</span>
+                <div class="language-dropdown">
+                    <button data-lang="en" class="active">English</button>
+                    <button data-lang="ur">اردو</button>
+                    <button data-lang="ar">العربية</button>
                 </div>
             </div>
+            <a href="login.html" class="btn btn-primary">Login / Sign Up</a>
+            <a href="inventory.html" class="btn btn-outline">Inventory Dashboard</a>
         </div>
-    </section>
+    </div>
 
-    <!-- ========== CTA SECTION ========== -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Ready to Experience Better Shopping?</h2>
-            <p>Join thousands of satisfied customers today.</p>
-            <a href="contact.html" class="btn btn-primary btn-large">Start Shopping</a>
-        </div>
-    </section>
+    <main id="main-content">
+        <!-- ========== PAGE HEADER ========== -->
+        <section class="page-header">
+            <div class="container">
+                <h1>Our Services</h1>
+                <p>Everything you need for a smooth shopping experience.</p>
+            </div>
+        </section>
+
+        <!-- ========== SERVICES GRID ========== -->
+        <section class="section">
+            <div class="container">
+                <div class="grid-3">
+                    <div class="service-card reveal reveal-delay-1">
+                        <div class="icon">🛒</div>
+                        <h3>Online Shopping</h3>
+                        <p>Shop from the comfort of your home and find a wide range of products in one place. We try to keep the shopping process simple, so you can find what you need without any hassle.</p>
+                    </div>
+                    <div class="service-card reveal reveal-delay-2">
+                        <div class="icon">🚚</div>
+                        <h3>Home Delivery</h3>
+                        <p>Once you place your order, we work to get it delivered to your provided address safely and on time. You can sit back and wait for your order to arrive at your doorstep.</p>
+                    </div>
+                    <div class="service-card reveal reveal-delay-3">
+                        <div class="icon">💳</div>
+                        <h3>Easy & Secure Payment</h3>
+                        <p>We aim to make paying for your order as easy and convenient as possible. Different payment options are available so you can choose the one that works best for you.</p>
+                    </div>
+                    <div class="service-card reveal reveal-delay-1">
+                        <div class="icon">📦</div>
+                        <h3>Order Tracking</h3>
+                        <p>You don't have to keep wondering where your order is. Our order tracking service lets you check the progress of your order and stay updated until it reaches you.</p>
+                    </div>
+                    <div class="service-card reveal reveal-delay-2">
+                        <div class="icon">🔄</div>
+                        <h3>Return & Exchange</h3>
+                        <p>Sometimes a product may not be what you expected, and we understand that. For eligible products, we provide return and exchange options according to our store policy.</p>
+                    </div>
+                    <div class="service-card reveal reveal-delay-3">
+                        <div class="icon">💬</div>
+                        <h3>Customer Support</h3>
+                        <p>If you have a question about a product, order, or delivery, our customer support is here to help. We believe customers should be able to get a clear answer when they need one.</p>
+                    </div>
+                    <div class="service-card reveal reveal-delay-1" style="grid-column: 1 / -1; max-width: 400px; margin: 0 auto; width: 100%;">
+                        <div class="icon">🎁</div>
+                        <h3>Gift & Product Selection</h3>
+                        <p>Not sure what to buy? We can help you explore different products and find something that fits your needs, whether it's for yourself or someone special.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== CTA SECTION ========== -->
+        <section class="cta-section">
+            <div class="container">
+                <h2>Ready to Experience Better Shopping?</h2>
+                <p>Join thousands of satisfied customers today.</p>
+                <a href="contact.html" class="btn btn-primary btn-large">Start Shopping</a>
+            </div>
+        </section>
+    </main>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
@@ -172,5 +208,6 @@
     <script src="supabase-config.js"></script>
     <script src="cart.js"></script>
     <script src="script.js"></script>
+    <script src="mobile.js"></script>
 </body>
 </html>

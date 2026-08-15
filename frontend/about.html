@@ -1,8 +1,11 @@
-OR<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>About Us — Our Goal, Mission & Why E Store</title>
     <meta name="description" content="Learn about E Store's mission to make electronics shopping simple, trustworthy, and stress-free. Discover why thousands choose us.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,15 +13,21 @@ OR<!DOCTYPE html>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cart.css">
+    <link rel="stylesheet" href="mobile.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- ========== NAVBAR ========== -->
-    <nav class="navbar sticky">
+    <nav class="navbar sticky" aria-label="Main navigation">
         <div class="container">
-            <a href="index.html" class="nav-logo">
+            <a href="index.html" class="nav-logo" aria-label="E Store Home">
                 <span class="logo-icon">⚡</span>
                 E Store
             </a>
+            <div class="navbar-search" role="search">
+                <input type="search" placeholder="Search products..." aria-label="Search products">
+            </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="products.html" class="nav-link">Products</a>
@@ -29,8 +38,17 @@ OR<!DOCTYPE html>
                 <a href="inventory.html" class="nav-link">Inventory</a>
             </div>
             <div class="nav-right">
+                <div class="language-toggle" aria-label="Language selector">
+                    <span>🌐</span>
+                    <span>EN</span>
+                    <div class="language-dropdown">
+                        <button data-lang="en" class="active">English</button>
+                        <button data-lang="ur">اردو</button>
+                        <button data-lang="ar">العربية</button>
+                    </div>
+                </div>
                 <a href="inventory.html" class="btn btn-primary btn-small">Inventory</a>
-                <button class="hamburger" aria-label="Toggle menu">
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -39,9 +57,12 @@ OR<!DOCTYPE html>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu - Complete site structure with ALL features -->
     <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu">
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+        <div class="mobile-menu-search" role="search">
+            <input type="search" placeholder="Search products..." aria-label="Search products">
+        </div>
         <a href="index.html" class="nav-link">Home</a>
         <a href="products.html" class="nav-link">Products</a>
         <a href="about.html" class="nav-link active">About Us</a>
@@ -49,137 +70,152 @@ OR<!DOCTYPE html>
         <a href="blogs.html" class="nav-link">Blogs</a>
         <a href="contact.html" class="nav-link">Contact Us</a>
         <a href="inventory.html" class="nav-link">Inventory</a>
+        <div class="mobile-menu-actions">
+            <div class="language-toggle" aria-label="Language selector">
+                <span>🌐</span>
+                <span>EN</span>
+                <div class="language-dropdown">
+                    <button data-lang="en" class="active">English</button>
+                    <button data-lang="ur">اردو</button>
+                    <button data-lang="ar">العربية</button>
+                </div>
+            </div>
+            <a href="login.html" class="btn btn-primary">Login / Sign Up</a>
+            <a href="inventory.html" class="btn btn-outline">Inventory Dashboard</a>
+        </div>
     </div>
 
-    <!-- ========== PAGE HEADER ========== -->
-    <section class="page-header">
-        <div class="container">
-            <p class="breadcrumb"><a href="index.html">Home</a> > About Us</p>
-            <h1>About E Store</h1>
-        </div>
-    </section>
+    <main id="main-content">
+        <!-- ========== PAGE HEADER ========== -->
+        <section class="page-header">
+            <div class="container">
+                <p class="breadcrumb"><a href="index.html">Home</a> > About Us</p>
+                <h1>About E Store</h1>
+            </div>
+        </section>
 
-    <!-- ========== OUR GOAL SECTION ========== -->
-    <section class="section section-light">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text reveal">
-                    <p class="eyebrow">OUR GOAL</p>
-                    <h2>Making Shopping Easier for Everyone</h2>
-                    <p>At E Store, our goal is simple: we want to make everyday shopping easier, more convenient, and more reliable for our customers. We bring a variety of useful products together in one place, so you don't have to waste time searching through different stores. From everyday essentials to fashion, accessories, and products for the whole family, we focus on offering good choices at reasonable prices. Most importantly, we want our customers to feel comfortable shopping with us and know that we genuinely care about their experience, from the moment they find a product to the moment it reaches their doorstep.</p>
-                </div>
-                <div class="about-image reveal reveal-delay-2">
-                    <img src="https://via.placeholder.com/600x400?text=Delivery+Happy+Customer" alt="Delivery to happy customer" loading="lazy">
+        <!-- ========== OUR GOAL SECTION ========== -->
+        <section class="section section-light">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text reveal">
+                        <p class="eyebrow">OUR GOAL</p>
+                        <h2>Making Shopping Easier for Everyone</h2>
+                        <p>At E Store, our goal is simple: we want to make everyday shopping easier, more convenient, and more reliable for our customers. We bring a variety of useful products together in one place, so you don't have to waste time searching through different stores. From everyday essentials to fashion, accessories, and products for the whole family, we focus on offering good choices at reasonable prices. Most importantly, we want our customers to feel comfortable shopping with us and know that we genuinely care about their experience, from the moment they find a product to the moment it reaches their doorstep.</p>
+                    </div>
+                    <div class="about-image reveal reveal-delay-2">
+                        <img src="https://via.placeholder.com/600x400?text=Delivery+Happy+Customer" alt="Delivery to happy customer" loading="lazy">
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ========== OUR MISSION SECTION ========== -->
-    <section class="section">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-image reveal">
-                    <img src="https://via.placeholder.com/600x400?text=Online+Shopping+Devices" alt="People shopping online" loading="lazy">
-                </div>
-                <div class="about-text reveal reveal-delay-2">
-                    <p class="eyebrow">OUR MISSION</p>
-                    <h2>A Shopping Experience You Can Trust</h2>
-                    <p>Our mission at E Store is to give people a shopping experience that feels simple, trustworthy, and stress-free. We want to offer products that are useful, affordable, and worth the money, while making the whole process easy for our customers. Whether someone is shopping for themselves, their family, or looking for something specific, we want them to find what they need without unnecessary hassle. As we grow, our focus will always be on listening to our customers, improving our service, and building a store that people can come back to with confidence.</p>
+        <!-- ========== OUR MISSION SECTION ========== -->
+        <section class="section">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-image reveal">
+                        <img src="https://via.placeholder.com/600x400?text=Online+Shopping+Devices" alt="People shopping online" loading="lazy">
+                    </div>
+                    <div class="about-text reveal reveal-delay-2">
+                        <p class="eyebrow">OUR MISSION</p>
+                        <h2>A Shopping Experience You Can Trust</h2>
+                        <p>Our mission at E Store is to give people a shopping experience that feels simple, trustworthy, and stress-free. We want to offer products that are useful, affordable, and worth the money, while making the whole process easy for our customers. Whether someone is shopping for themselves, their family, or looking for something specific, we want them to find what they need without unnecessary hassle. As we grow, our focus will always be on listening to our customers, improving our service, and building a store that people can come back to with confidence.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ========== WHY CHOOSE US SECTION ========== -->
-    <section class="section section-light">
-        <div class="container">
-            <div class="section-header reveal">
-                <p class="eyebrow">WHY E STORE</p>
-                <h2>Why Choose E Store?</h2>
+        <!-- ========== WHY CHOOSE US SECTION ========== -->
+        <section class="section section-light">
+            <div class="container">
+                <div class="section-header reveal">
+                    <p class="eyebrow">WHY E STORE</p>
+                    <h2>Why Choose E Store?</h2>
+                </div>
+                <div class="about-content" style="display: block; max-width: 800px; margin: 0 auto;">
+                    <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 40px;">At E Store, we focus on making shopping simple, reliable, and convenient. We offer a variety of products at reasonable prices, so customers can find what they need without having to look everywhere. We also care about providing a smooth shopping experience, from choosing a product to receiving the order. Our aim is not just to sell products, but to build a store that customers can trust and feel comfortable coming back to.</p>
+                </div>
+                <div class="feature-grid reveal">
+                    <div class="feature-item">
+                        <div class="feature-icon">🏷️</div>
+                        <div>
+                            <h4>Fair Pricing</h4>
+                            <p>Competitive prices without compromising quality</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🚚</div>
+                        <div>
+                            <h4>Reliable Delivery</h4>
+                            <p>Safe, on-time delivery to your doorstep</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🛡️</div>
+                        <div>
+                            <h4>Secure Shopping</h4>
+                            <p>Your data and payments are always protected</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💬</div>
+                        <div>
+                            <h4>24/7 Support</h4>
+                            <p>Help whenever you need it</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔄</div>
+                        <div>
+                            <h4>Easy Returns</h4>
+                            <p>Hassle-free return and exchange policy</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⭐</div>
+                        <div>
+                            <h4>Quality Guaranteed</h4>
+                            <p>Handpicked, tested products only</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="about-content" style="display: block; max-width: 800px; margin: 0 auto;">
-                <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 40px;">At E Store, we focus on making shopping simple, reliable, and convenient. We offer a variety of products at reasonable prices, so customers can find what they need without having to look everywhere. We also care about providing a smooth shopping experience, from choosing a product to receiving the order. Our aim is not just to sell products, but to build a store that customers can trust and feel comfortable coming back to.</p>
-            </div>
-            <div class="feature-grid reveal">
-                <div class="feature-item">
-                    <div class="feature-icon">🏷️</div>
-                    <div>
-                        <h4>Fair Pricing</h4>
-                        <p>Competitive prices without compromising quality</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🚚</div>
-                    <div>
-                        <h4>Reliable Delivery</h4>
-                        <p>Safe, on-time delivery to your doorstep</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🛡️</div>
-                    <div>
-                        <h4>Secure Shopping</h4>
-                        <p>Your data and payments are always protected</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">💬</div>
-                    <div>
-                        <h4>24/7 Support</h4>
-                        <p>Help whenever you need it</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🔄</div>
-                    <div>
-                        <h4>Easy Returns</h4>
-                        <p>Hassle-free return and exchange policy</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">⭐</div>
-                    <div>
-                        <h4>Quality Guaranteed</h4>
-                        <p>Handpicked, tested products only</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ========== OUR JOURNEY SECTION ========== -->
-    <section class="our-journey-section">
-        <div class="container">
-            <div class="journey-image-wrapper">
-                <img src="https://kimi-web-img.kimi.ai/img/s.alicdn.com/f23b7e3245e27eb8085053e0b33606d76ca57239.png" 
-                     alt="E Store - Our Journey from Hardships to Excellence" 
-                     class="journey-image">
-            </div>
-            
-            <div class="journey-content">
-                <p class="eyebrow">OUR JOURNEY</p>
-                <h2>From Hardships to Excellence</h2>
-                <p>When we started E Store, the road wasn't easy. We faced countless challenges — limited resources, tough competition, and the constant pressure to prove ourselves in a crowded market. There were days when giving up seemed like the easier option, but we held on to our vision: to build a store that people could truly trust.</p>
-                <p>Through every setback, we learned. Through every failure, we grew. We listened to our customers, refined our approach, and never stopped improving. Slowly but surely, the hardships that once held us back became the very foundation of our strength. Today, E Store stands as a testament to persistence, hard work, and the belief that excellence is not a destination — it's a journey we walk every single day.</p>
-            </div>
+        <!-- ========== OUR JOURNEY SECTION ========== -->
+        <section class="our-journey-section">
+            <div class="container">
+                <div class="journey-image-wrapper">
+                    <img src="https://kimi-web-img.kimi.ai/img/s.alicdn.com/f23b7e3245e27eb8085053e0b33606d76ca57239.png" 
+                         alt="E Store - Our Journey from Hardships to Excellence" 
+                         class="journey-image">
+                </div>
+                
+                <div class="journey-content">
+                    <p class="eyebrow">OUR JOURNEY</p>
+                    <h2>From Hardships to Excellence</h2>
+                    <p>When we started E Store, the road wasn't easy. We faced countless challenges — limited resources, tough competition, and the constant pressure to prove ourselves in a crowded market. There were days when giving up seemed like the easier option, but we held on to our vision: to build a store that people could truly trust.</p>
+                    <p>Through every setback, we learned. Through every failure, we grew. We listened to our customers, refined our approach, and never stopped improving. Slowly but surely, the hardships that once held us back became the very foundation of our strength. Today, E Store stands as a testament to persistence, hard work, and the belief that excellence is not a destination — it's a journey we walk every single day.</p>
+                </div>
 
-            <div class="journey-stats-row">
-                <div class="journey-stat-card">
-                    <h3>5+</h3>
-                    <p>Years of Experience</p>
-                </div>
-                <div class="journey-stat-card">
-                    <h3>10,000+</h3>
-                    <p>Happy Customers</p>
-                </div>
-                <div class="journey-stat-card">
-                    <h3>99%</h3>
-                    <p>Satisfaction Rate</p>
+                <div class="journey-stats-row">
+                    <div class="journey-stat-card">
+                        <h3>5+</h3>
+                        <p>Years of Experience</p>
+                    </div>
+                    <div class="journey-stat-card">
+                        <h3>10,000+</h3>
+                        <p>Happy Customers</p>
+                    </div>
+                    <div class="journey-stat-card">
+                        <h3>99%</h3>
+                        <p>Satisfaction Rate</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
@@ -240,5 +276,6 @@ OR<!DOCTYPE html>
     <script src="supabase-config.js"></script>
     <script src="cart.js"></script>
     <script src="script.js"></script>
+    <script src="mobile.js"></script>
 </body>
 </html>

@@ -41,6 +41,23 @@ function initProductsPage() {
             });
         });
     }
+
+    // Handle search from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+    if (searchQuery) {
+        const results = products.filter(p =>
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (p.category || '').toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        renderProducts(results);
+        if (filtersContainer) {
+            filtersContainer.innerHTML = `
+                <button class="btn btn-small filter-btn active" data-category="All">All</button>
+                <button class="btn btn-small filter-btn" onclick="window.location.href='products.html'">Clear Search</button>
+            `;
+        }
+    }
 }
 
 function renderProducts(products) {
@@ -75,6 +92,11 @@ function renderProducts(products) {
             </div>
         `;
     }).join('');
+
+    // Re-init lightbox for new images
+    if (typeof initLightbox === 'function') {
+        initLightbox();
+    }
 }
 
 // Add product to cart using the global cart system and show toast

@@ -73,6 +73,8 @@ function showCartToast(message, type) {
         toast.className = 'toast toast-success';
     }
     toast.textContent = message;
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2000);
 }
@@ -146,6 +148,9 @@ function openCartDrawer() {
     drawer.classList.add('open');
     backdrop.classList.add('show');
     document.body.style.overflow = 'hidden';
+    // Focus the close button for accessibility
+    const closeBtn = drawer.querySelector('.cart-drawer-close');
+    if (closeBtn) closeBtn.focus();
 }
 
 function closeCartDrawer() {
@@ -154,6 +159,52 @@ function closeCartDrawer() {
     if (drawer) drawer.classList.remove('open');
     if (backdrop) backdrop.classList.remove('show');
     document.body.style.overflow = '';
+}
+
+// ========== CART DRAWER SWIPE-TO-CLOSE ==========
+function initCartSwipe() {
+    const drawer = document.getElementById('cartDrawer');
+    if (!drawer) return;
+
+    let startX = 0;
+    let startY = 0;
+    let isSwiping = false;
+
+    drawer.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isSwiping = true;
+        drawer.style.transition = 'none';
+    }, { passive: true });
+
+    drawer.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+        const diffX = e.touches[0].clientX - startX;
+        const diffY = e.touches[0].clientY - startY;
+        // Only swipe horizontally
+        if (Math.abs(diffX) > Math.abs(diffY) && diffX > 0) {
+            drawer.style.transform = `translateX(${diffX}px)`;
+        }
+    }, { passive: true });
+
+    drawer.addEventListener('touchend', (e) => {
+        if (!isSwiping) return;
+        isSwiping = false;
+        drawer.style.transition = '';
+        const diffX = e.changedTouches[0].clientX - startX;
+        if (diffX > 100) {
+            closeCartDrawer();
+        } else {
+            drawer.style.transform = '';
+        }
+    }, { passive: true });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) {
+            closeCartDrawer();
+        }
+    });
 }
 
 function renderCartDrawer() {
@@ -198,4 +249,5 @@ document.addEventListener('DOMContentLoaded', () => {
     injectCartButton();
     injectCartDrawer();
     updateCartBadge();
+    initCartSwipe();
 });

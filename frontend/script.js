@@ -12,8 +12,26 @@ function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
+}
+
+// ========== SCREEN READER ANNOUNCEMENTS ==========
+function announce(message) {
+    let region = document.getElementById('ariaLiveRegion');
+    if (!region) {
+        region = document.createElement('div');
+        region.id = 'ariaLiveRegion';
+        region.setAttribute('aria-live', 'polite');
+        region.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(region);
+    }
+    region.textContent = '';
+    setTimeout(() => {
+        region.textContent = message;
+    }, 50);
 }
 
 // ========== NAVBAR ==========
@@ -21,7 +39,7 @@ function initNavbar() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
 
-    // Sticky navbar on scroll
+    // Sticky navbar on scroll (passive listener for performance)
     window.addEventListener('scroll', () => {
         const hero = document.querySelector('.hero');
         const scrollY = window.scrollY;
@@ -39,7 +57,7 @@ function initNavbar() {
                 navbar.classList.add('transparent');
             }
         }
-    });
+    }, { passive: true });
 
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
@@ -48,10 +66,13 @@ function initNavbar() {
 
     if (hamburger && mobileMenu) {
         function toggleMenu() {
+            const isOpen = mobileMenu.classList.contains('open');
             hamburger.classList.toggle('active');
             mobileMenu.classList.toggle('open');
             if (backdrop) backdrop.classList.toggle('show');
-            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+            hamburger.setAttribute('aria-expanded', String(!isOpen));
+            announce(isOpen ? 'Menu closed' : 'Menu opened');
         }
 
         hamburger.addEventListener('click', toggleMenu);
@@ -60,6 +81,14 @@ function initNavbar() {
         // Close mobile menu on link click
         mobileMenu.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', toggleMenu);
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+                toggleMenu();
+                hamburger.focus();
+            }
         });
     }
 
@@ -70,6 +99,14 @@ function initNavbar() {
         if (href === currentPage || (currentPage === '' && href === 'index.html')) {
             link.classList.add('active');
         }
+    });
+}
+
+// ========== PASSIVE EVENT LISTENERS ==========
+function initPassiveListeners() {
+    const scrollEvents = ['scroll', 'touchstart', 'touchmove', 'wheel'];
+    scrollEvents.forEach(event => {
+        document.addEventListener(event, () => {}, { passive: true });
     });
 }
 
@@ -588,18 +625,18 @@ function renderInventoryTable() {
 
     tbody.innerHTML = inventoryProducts.map(product => `
         <tr>
-            <td>${product.id}</td>
-            <td>
+            <td data-label="ID">${product.id}</td>
+            <td data-label="Image">
                 <img src="${product.image || 'https://via.placeholder.com/60x60?text=Product'}" 
                      alt="${product.name}" 
                      class="inventory-product-image"
                      loading="lazy">
             </td>
-            <td class="product-name">${product.name}</td>
-            <td><span class="category-badge">${product.category || 'General'}</span></td>
-            <td class="price-cell">PKR ${Number(product.price).toLocaleString()}</td>
-            <td class="stock-cell ${product.stock <= 10 ? 'stock-low' : 'stock-ok'}">${product.stock}</td>
-            <td>
+            <td class="product-name" data-label="Name">${product.name}</td>
+            <td data-label="Category"><span class="category-badge">${product.category || 'General'}</span></td>
+            <td class="price-cell" data-label="Price">PKR ${Number(product.price).toLocaleString()}</td>
+            <td class="stock-cell ${product.stock <= 10 ? 'stock-low' : 'stock-ok'}" data-label="Stock">${product.stock}</td>
+            <td data-label="Actions">
                 <div class="action-btns">
                     <button class="btn-edit" onclick="editProduct(${product.id})">Edit</button>
                     <button class="btn-delete" onclick="deleteProduct(${product.id})">Delete</button>
@@ -754,6 +791,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initContactForm();
     initNewsletterForms();
+    initPassiveListeners();
     
     // Load dynamic content
     loadFeaturedProducts();

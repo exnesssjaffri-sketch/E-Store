@@ -43,9 +43,96 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Real-time validation
+    initCheckoutValidation();
+
+    // Card formatting
+    initCardFormatting();
+
     const checkoutForm = document.getElementById('checkoutForm');
     if (checkoutForm) checkoutForm.addEventListener('submit', placeOrder);
 });
+
+// ========== REAL-TIME VALIDATION ==========
+function initCheckoutValidation() {
+    const form = document.getElementById('checkoutForm');
+    if (!form) return;
+
+    form.querySelectorAll('input, textarea').forEach(field => {
+        field.addEventListener('blur', () => {
+            validateCheckoutField(field);
+        });
+        field.addEventListener('input', () => {
+            if (field.closest('.form-group') && field.closest('.form-group').classList.contains('error')) {
+                validateCheckoutField(field);
+            }
+        });
+    });
+}
+
+function validateCheckoutField(field) {
+    const group = field.closest('.form-group');
+    if (!group) return;
+
+    const errorEl = group.querySelector('.form-error');
+    let isValid = true;
+    let errorMessage = '';
+
+    if (field.required && !field.value.trim()) {
+        isValid = false;
+        errorMessage = 'This field is required';
+    } else if (field.type === 'email' && field.value && !/^\S+@\S+\.\S+$/.test(field.value)) {
+        isValid = false;
+        errorMessage = 'Please enter a valid email address';
+    } else if (field.type === 'tel' && field.value && !/^[0-9+\-\s()]{7,15}$/.test(field.value)) {
+        isValid = false;
+        errorMessage = 'Please enter a valid phone number';
+    } else if (field.id === 'cardNumber' && field.value && field.value.replace(/\s/g, '').length < 16) {
+        isValid = false;
+        errorMessage = 'Card number must be 16 digits';
+    } else if (field.id === 'cardExpiry' && field.value && !/^\d{2}\/\d{2}$/.test(field.value)) {
+        isValid = false;
+        errorMessage = 'Use MM/YY format';
+    } else if (field.id === 'cardCvv' && field.value && field.value.length < 3) {
+        isValid = false;
+        errorMessage = 'CVV must be 3-4 digits';
+    }
+
+    group.classList.toggle('error', !isValid);
+    if (errorEl) errorEl.textContent = errorMessage;
+
+    return isValid;
+}
+
+// ========== CARD FORMATTING ==========
+function initCardFormatting() {
+    const cardNumber = document.getElementById('cardNumber');
+    if (cardNumber) {
+        cardNumber.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '').slice(0, 16);
+            e.target.value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        });
+    }
+
+    const cardExpiry = document.getElementById('cardExpiry');
+    if (cardExpiry) {
+        cardExpiry.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '').slice(0, 4);
+            if (value.length >= 3) {
+                e.target.value = value.slice(0, 2) + '/' + value.slice(2);
+            } else {
+                e.target.value = value;
+            }
+        });
+    }
+
+    const cardCvv = document.getElementById('cardCvv');
+    if (cardCvv) {
+        cardCvv.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+        });
+    }
+}
 
 function renderOrderSummary() {
     const cart = (typeof getCart === 'function') ? getCart() : [];
@@ -109,22 +196,29 @@ async function placeOrder(e) {
     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
 
     // Basic validation
-    if (!fullName || !phone || !email || !address) {
-        showCartToast('Please fill in all required fields.', 'error');
-        return;
-    }
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-        showCartToast('Please enter a valid email address.', 'error');
+    let hasError = false;
+    ['fullName', 'phone', 'email', 'address'].forEach(id => {
+        const field = document.getElementById(id);
+        if (field && !validateCheckoutField(field)) {
+            hasError = true;
+        }
+    });
+
+    if (hasError) {
+        showCartToast('Please fill in all required fields correctly.', 'error');
         return;
     }
 
     // Card validation if card selected
     if (paymentMethod === 'card') {
-        const cardNumber = document.getElementById('cardNumber').value.trim();
-        const cardExpiry = document.getElementById('cardExpiry').value.trim();
-        const cardCvv = document.getElementById('cardCvv').value.trim();
-        if (!cardNumber || !cardExpiry || !cardCvv) {
-            showCartToast('Please fill in all card details.', 'error');
+        ['cardNumber', 'cardExpiry', 'cardCvv'].forEach(id => {
+            const field = document.getElementById(id);
+            if (field && !validateCheckoutField(field)) {
+                hasError = true;
+            }
+        });
+        if (hasError) {
+            showCartToast('Please fill in all card details correctly.', 'error');
             return;
         }
     }

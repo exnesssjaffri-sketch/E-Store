@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Contact Us — Get in Touch with E Store</title>
     <meta name="description" content="Have questions? Contact E Store via email or phone. Our team is ready to help you with orders, products, and support.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,15 +13,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cart.css">
+    <link rel="stylesheet" href="mobile.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- ========== NAVBAR ========== -->
-    <nav class="navbar sticky">
+    <nav class="navbar sticky" aria-label="Main navigation">
         <div class="container">
-            <a href="index.html" class="nav-logo">
+            <a href="index.html" class="nav-logo" aria-label="E Store Home">
                 <span class="logo-icon">⚡</span>
                 E Store
             </a>
+            <div class="navbar-search" role="search">
+                <input type="search" placeholder="Search products..." aria-label="Search products">
+            </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="products.html" class="nav-link">Products</a>
@@ -29,8 +38,17 @@
                 <a href="inventory.html" class="nav-link">Inventory</a>
             </div>
             <div class="nav-right">
+                <div class="language-toggle" aria-label="Language selector">
+                    <span>🌐</span>
+                    <span>EN</span>
+                    <div class="language-dropdown">
+                        <button data-lang="en" class="active">English</button>
+                        <button data-lang="ur">اردو</button>
+                        <button data-lang="ar">العربية</button>
+                    </div>
+                </div>
                 <a href="inventory.html" class="btn btn-primary btn-small">Inventory</a>
-                <button class="hamburger" aria-label="Toggle menu">
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -39,9 +57,12 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu - Complete site structure with ALL features -->
     <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu">
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+        <div class="mobile-menu-search" role="search">
+            <input type="search" placeholder="Search products..." aria-label="Search products">
+        </div>
         <a href="index.html" class="nav-link">Home</a>
         <a href="products.html" class="nav-link">Products</a>
         <a href="about.html" class="nav-link">About Us</a>
@@ -49,109 +70,124 @@
         <a href="blogs.html" class="nav-link">Blogs</a>
         <a href="contact.html" class="nav-link active">Contact Us</a>
         <a href="inventory.html" class="nav-link">Inventory</a>
-    </div>
-
-    <!-- ========== PAGE HEADER ========== -->
-    <section class="page-header">
-        <div class="container">
-            <h1>Contact Us</h1>
-            <p>We're here to help. Reach out anytime.</p>
-        </div>
-    </section>
-
-    <!-- ========== CONTACT SECTION ========== -->
-    <section class="section">
-        <div class="container">
-            <div class="contact-section">
-                <!-- Left Column - Contact Info -->
-                <div class="contact-info reveal">
-                    <h3>Get in Touch</h3>
-                    <p>Have a question, need help with an order, or just want to know more about a product? Feel free to get in touch with us. Our team is always happy to help and will do its best to get back to you as soon as possible. Whether it's a simple question or something you need help sorting out, we're here for you.</p>
-
-                    <div class="contact-detail">
-                        <div class="contact-icon">✉️</div>
-                        <div>
-                            <div class="contact-label">Email Us</div>
-                            <a href="mailto:exnesssjaffri@gmail.com" class="contact-value">exnesssjaffri@gmail.com</a>
-                        </div>
-                    </div>
-
-                    <div class="contact-detail">
-                        <div class="contact-icon">📞</div>
-                        <div>
-                            <div class="contact-label">Call Us</div>
-                            <a href="tel:03332561434" class="contact-value">0333 2561434</a>
-                        </div>
-                    </div>
-
-                    <div class="contact-detail">
-                        <div class="contact-icon">🕐</div>
-                        <div>
-                            <div class="contact-label">Working Hours</div>
-                            <div class="contact-value">Monday — Saturday: 9:00 AM — 8:00 PM</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p style="font-weight: 600; margin-bottom: 12px; color: var(--color-text-main);">Follow Us</p>
-                        <div class="social-links">
-                            <a href="#" class="social-link" aria-label="Facebook">f</a>
-                            <a href="#" class="social-link" aria-label="Instagram">ig</a>
-                            <a href="#" class="social-link" aria-label="Twitter">X</a>
-                            <a href="#" class="social-link" aria-label="LinkedIn">in</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column - Contact Form -->
-                <div class="contact-form reveal reveal-delay-2">
-                    <h3>Send Us a Message</h3>
-                    <div class="success-message"></div>
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="fullName">Full Name</label>
-                            <input type="text" id="fullName" placeholder="Your full name" required minlength="2">
-                            <div class="form-error">Name must be at least 2 characters</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" placeholder="your@email.com" required>
-                            <div class="form-error">Please enter a valid email</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" placeholder="Your phone number">
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <select id="subject" required>
-                                <option value="">Select a subject</option>
-                                <option value="General Inquiry">General Inquiry</option>
-                                <option value="Order Support">Order Support</option>
-                                <option value="Product Question">Product Question</option>
-                                <option value="Feedback">Feedback</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" placeholder="How can we help you?" required minlength="10"></textarea>
-                            <div class="form-error">Message must be at least 10 characters</div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Send Message</button>
-                    </form>
+        <div class="mobile-menu-actions">
+            <div class="language-toggle" aria-label="Language selector">
+                <span>🌐</span>
+                <span>EN</span>
+                <div class="language-dropdown">
+                    <button data-lang="en" class="active">English</button>
+                    <button data-lang="ur">اردو</button>
+                    <button data-lang="ar">العربية</button>
                 </div>
             </div>
+            <a href="login.html" class="btn btn-primary">Login / Sign Up</a>
+            <a href="inventory.html" class="btn btn-outline">Inventory Dashboard</a>
         </div>
-    </section>
+    </div>
 
-    <!-- ========== MAP SECTION ========== -->
-    <section class="section section-light" style="padding: 0;">
-        <div style="width: 100%; height: 400px; filter: grayscale(50%); overflow: hidden;">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.0973200000003!2d67.0248!3d24.9285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDU1JzQyLjYiTiA2N8KwMDEnMjkuMyJF!5e0!3m2!1sen!2s!4v1" 
-                width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-    </section>
+    <main id="main-content">
+        <!-- ========== PAGE HEADER ========== -->
+        <section class="page-header">
+            <div class="container">
+                <h1>Contact Us</h1>
+                <p>We're here to help. Reach out anytime.</p>
+            </div>
+        </section>
+
+        <!-- ========== CONTACT SECTION ========== -->
+        <section class="section">
+            <div class="container">
+                <div class="contact-section">
+                    <!-- Left Column - Contact Info -->
+                    <div class="contact-info reveal">
+                        <h3>Get in Touch</h3>
+                        <p>Have a question, need help with an order, or just want to know more about a product? Feel free to get in touch with us. Our team is always happy to help and will do its best to get back to you as soon as possible. Whether it's a simple question or something you need help sorting out, we're here for you.</p>
+
+                        <div class="contact-detail">
+                            <div class="contact-icon">✉️</div>
+                            <div>
+                                <div class="contact-label">Email Us</div>
+                                <a href="mailto:exnesssjaffri@gmail.com" class="contact-value">exnesssjaffri@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-detail">
+                            <div class="contact-icon">📞</div>
+                            <div>
+                                <div class="contact-label">Call Us</div>
+                                <a href="tel:03332561434" class="contact-value">0333 2561434</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-detail">
+                            <div class="contact-icon">🕐</div>
+                            <div>
+                                <div class="contact-label">Working Hours</div>
+                                <div class="contact-value">Monday — Saturday: 9:00 AM — 8:00 PM</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p style="font-weight: 600; margin-bottom: 12px; color: var(--color-text-main);">Follow Us</p>
+                            <div class="social-links">
+                                <a href="#" class="social-link" aria-label="Facebook">f</a>
+                                <a href="#" class="social-link" aria-label="Instagram">ig</a>
+                                <a href="#" class="social-link" aria-label="Twitter">X</a>
+                                <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Contact Form -->
+                    <div class="contact-form reveal reveal-delay-2">
+                        <h3>Send Us a Message</h3>
+                        <div class="success-message"></div>
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" placeholder="Your full name" required minlength="2" autocomplete="name">
+                                <div class="form-error">Name must be at least 2 characters</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" placeholder="your@email.com" required autocomplete="email">
+                                <div class="form-error">Please enter a valid email</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="Your phone number" autocomplete="tel">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <select id="subject" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                    <option value="Order Support">Order Support</option>
+                                    <option value="Product Question">Product Question</option>
+                                    <option value="Feedback">Feedback</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" placeholder="How can we help you?" required minlength="10"></textarea>
+                                <div class="form-error">Message must be at least 10 characters</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== MAP SECTION ========== -->
+        <section class="section section-light" style="padding: 0;">
+            <div class="map-container" style="filter: grayscale(50%);">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.0973200000003!2d67.0248!3d24.9285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDU1JzQyLjYiTiA2N8KwMDEnMjkuMyJF!5e0!3m2!1sen!2s!4v1" 
+                    width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="E Store location map"></iframe>
+            </div>
+        </section>
+    </main>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
@@ -211,5 +247,6 @@
     <script src="supabase-config.js"></script>
     <script src="cart.js"></script>
     <script src="script.js"></script>
+    <script src="mobile.js"></script>
 </body>
 </html>

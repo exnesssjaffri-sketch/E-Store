@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Products — E Store</title>
     <meta name="description" content="Browse every product available at E Store. From laptops to accessories, find the best electronics at trusted prices.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,15 +13,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cart.css">
+    <link rel="stylesheet" href="mobile.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- ========== NAVBAR ========== -->
-    <nav class="navbar sticky">
+    <nav class="navbar sticky" aria-label="Main navigation">
         <div class="container">
-            <a href="index.html" class="nav-logo">
+            <a href="index.html" class="nav-logo" aria-label="E Store Home">
                 <span class="logo-icon">⚡</span>
                 E Store
             </a>
+            <div class="navbar-search" role="search">
+                <input type="search" placeholder="Search products..." aria-label="Search products">
+            </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="products.html" class="nav-link active">Products</a>
@@ -29,8 +38,17 @@
                 <a href="inventory.html" class="nav-link">Inventory</a>
             </div>
             <div class="nav-right">
+                <div class="language-toggle" aria-label="Language selector">
+                    <span>🌐</span>
+                    <span>EN</span>
+                    <div class="language-dropdown">
+                        <button data-lang="en" class="active">English</button>
+                        <button data-lang="ur">اردو</button>
+                        <button data-lang="ar">العربية</button>
+                    </div>
+                </div>
                 <a href="inventory.html" class="btn btn-primary btn-small">Inventory</a>
-                <button class="hamburger" aria-label="Toggle menu">
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -39,9 +57,12 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu - Complete site structure with ALL features -->
     <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu">
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+        <div class="mobile-menu-search" role="search">
+            <input type="search" placeholder="Search products..." aria-label="Search products">
+        </div>
         <a href="index.html" class="nav-link">Home</a>
         <a href="products.html" class="nav-link active">Products</a>
         <a href="about.html" class="nav-link">About Us</a>
@@ -49,27 +70,42 @@
         <a href="blogs.html" class="nav-link">Blogs</a>
         <a href="contact.html" class="nav-link">Contact Us</a>
         <a href="inventory.html" class="nav-link">Inventory</a>
+        <div class="mobile-menu-actions">
+            <div class="language-toggle" aria-label="Language selector">
+                <span>🌐</span>
+                <span>EN</span>
+                <div class="language-dropdown">
+                    <button data-lang="en" class="active">English</button>
+                    <button data-lang="ur">اردو</button>
+                    <button data-lang="ar">العربية</button>
+                </div>
+            </div>
+            <a href="login.html" class="btn btn-primary">Login / Sign Up</a>
+            <a href="inventory.html" class="btn btn-outline">Inventory Dashboard</a>
+        </div>
     </div>
 
-    <!-- ========== PAGE HEADER ========== -->
-    <section class="page-header">
-        <div class="container">
-            <p class="breadcrumb"><a href="index.html">Home</a> > Products</p>
-            <h1>All Products</h1>
-        </div>
-    </section>
+    <main id="main-content">
+        <!-- ========== PAGE HEADER ========== -->
+        <section class="page-header">
+            <div class="container">
+                <p class="breadcrumb"><a href="index.html">Home</a> > Products</p>
+                <h1>All Products</h1>
+            </div>
+        </section>
 
-    <!-- ========== PRODUCTS SECTION ========== -->
-    <section class="section products-section">
-        <div class="container">
-            <div class="product-filters" id="productFilters">
-                <!-- Category filters injected by JS -->
+        <!-- ========== PRODUCTS SECTION ========== -->
+        <section class="section products-section">
+            <div class="container">
+                <div class="product-filters" id="productFilters">
+                    <!-- Category filters injected by JS -->
+                </div>
+                <div id="productsGrid" class="products-grid grid-4">
+                    <!-- Products injected here by JS -->
+                </div>
             </div>
-            <div id="productsGrid" class="products-grid grid-4">
-                <!-- Products injected here by JS -->
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
@@ -131,5 +167,6 @@
     <script src="cart.js"></script>
     <script src="script.js"></script>
     <script src="products.js"></script>
+    <script src="mobile.js"></script>
 </body>
 </html>
