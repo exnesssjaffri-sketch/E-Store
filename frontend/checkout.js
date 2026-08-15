@@ -3,7 +3,24 @@ console.log('checkout.js loaded');
 
 const DELIVERY_FEE = 200;
 const ORDERS_STORAGE_KEY = 'e-store-orders';
+const CART_STORAGE_KEY = 'e-store-cart';
 let supabase = null;
+
+// Read cart from localStorage (same key used by the cart sidebar)
+function getCartData() {
+    try {
+        // Prefer the cart.js helper if available
+        if (typeof getCart === 'function') {
+            const cart = getCart();
+            if (Array.isArray(cart)) return cart;
+        }
+        // Fallback: read directly from localStorage
+        return JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+    } catch (e) {
+        console.warn('Failed to read cart from localStorage:', e);
+        return [];
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Safe supabase init — never crash if Supabase is unavailable
@@ -17,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Supabase init failed:', e);
     }
 
-    // 2. Get cart (defensive)
-    const cart = (typeof getCart === 'function') ? getCart() : [];
+    // 2. Get cart (defensive) — reads from localStorage directly
+    const cart = getCartData();
     console.log('DOMContentLoaded fired, cart:', cart);
     const layout = document.getElementById('checkoutLayout');
     const emptyState = document.getElementById('checkoutEmpty');
@@ -135,7 +152,7 @@ function initCardFormatting() {
 }
 
 function renderOrderSummary() {
-    const cart = (typeof getCart === 'function') ? getCart() : [];
+    const cart = getCartData();
     const itemsContainer = document.getElementById('orderSummaryItems');
 
     // === MANUAL SUBTOTAL CALCULATION (bulletproof) ===
@@ -223,7 +240,7 @@ async function placeOrder(e) {
         }
     }
 
-    const cart = (typeof getCart === 'function') ? getCart() : [];
+    const cart = getCartData();
     const subtotal = cart.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
     const totalAmount = subtotal + DELIVERY_FEE;
 

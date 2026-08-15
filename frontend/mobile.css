@@ -264,7 +264,10 @@ h3 {
 
 /* Search in navbar (desktop) */
 .navbar-search {
-    display: none;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
     flex: 1;
     max-width: 300px;
     margin: 0 16px;
@@ -272,7 +275,7 @@ h3 {
 
 @media (min-width: 1024px) {
     .navbar-search {
-        display: block;
+        display: flex;
     }
 }
 
