@@ -14,6 +14,159 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cart.css">
     <link rel="stylesheet" href="mobile.css">
+    <style>
+        /* ===== ANIMATION KEYFRAMES ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        @keyframes badgeBounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.4); }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        @keyframes cartSlideIn {
+            from { transform: translateX(100%); opacity: 0.5; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+        }
+
+        /* ===== HERO ANIMATIONS ===== */
+        .hero-animate {
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards;
+        }
+        .hero-animate:nth-child(1) { animation-delay: 0.1s; }
+        .hero-animate:nth-child(2) { animation-delay: 0.3s; }
+        .hero-animate:nth-child(3) { animation-delay: 0.5s; }
+        .hero-animate:nth-child(4) { animation-delay: 0.7s; }
+        .hero-image.hero-animate { animation: scaleIn 1s ease 0.6s forwards, heroFloat 5s ease-in-out 1.6s infinite; }
+        .hero-cta .btn { animation: pulseGlow 2.5s ease-in-out infinite; }
+
+        /* ===== SCROLL REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.15s; }
+        .reveal-delay-2 { transition-delay: 0.3s; }
+        .reveal-delay-3 { transition-delay: 0.45s; }
+
+        /* ===== CARD HOVER LIFT + SHADOW ===== */
+        .work-card, .stat-item, .product-card, .feature-item, .journey-stat-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .work-card:hover, .stat-item:hover, .product-card:hover, .feature-item:hover, .journey-stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ===== BUTTON PRESS FEEDBACK ===== */
+        .btn, button, .filter-btn {
+            transition: transform 0.15s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .btn:active, button:active, .filter-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== NAV LINK ANIMATED UNDERLINE ===== */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-accent, #2563EB);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* ===== CART BADGE BOUNCE ===== */
+        .cart-badge.bounce {
+            animation: badgeBounce 0.5s ease;
+        }
+
+        /* ===== CART SIDEBAR SLIDE ===== */
+        .cart-sidebar.open {
+            animation: cartSlideIn 0.4s ease forwards;
+        }
+        .cart-backdrop.open {
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        /* ===== IMAGE ZOOM ON HOVER ===== */
+        .product-card .product-image img,
+        .product-card img {
+            transition: transform 0.4s ease;
+        }
+        .product-card:hover .product-image img,
+        .product-card:hover img {
+            transform: scale(1.08);
+        }
+
+        /* ===== STAT COUNTER HOVER ===== */
+        .stat-number {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .stat-item:hover .stat-number {
+            transform: scale(1.15);
+            color: var(--color-accent, #2563EB);
+        }
+
+        /* ===== STAGGERED GRID ITEMS ===== */
+        .grid-3 > *, .grid-4 > *, .grid-2 > * {
+            animation: fadeUp 0.6s ease both;
+        }
+        .grid-3 > *:nth-child(1), .grid-4 > *:nth-child(1), .grid-2 > *:nth-child(1) { animation-delay: 0.05s; }
+        .grid-3 > *:nth-child(2), .grid-4 > *:nth-child(2), .grid-2 > *:nth-child(2) { animation-delay: 0.15s; }
+        .grid-3 > *:nth-child(3), .grid-4 > *:nth-child(3), .grid-2 > *:nth-child(3) { animation-delay: 0.25s; }
+        .grid-4 > *:nth-child(4), .grid-2 > *:nth-child(4) { animation-delay: 0.35s; }
+        .grid-4 > *:nth-child(5) { animation-delay: 0.45s; }
+        .grid-4 > *:nth-child(6) { animation-delay: 0.55s; }
+        .grid-4 > *:nth-child(7) { animation-delay: 0.65s; }
+        .grid-4 > *:nth-child(8) { animation-delay: 0.75s; }
+
+        /* ===== NEWSLETTER FORM ===== */
+        .newsletter-form input:focus {
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -280,5 +433,34 @@
     <script src="cart.js"></script>
     <script src="script.js"></script>
     <script src="mobile.js"></script>
+    <script>
+        // ===== SCROLL REVEAL (IntersectionObserver) =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const revealElements = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            revealElements.forEach(el => observer.observe(el));
+
+            // ===== CART BADGE BOUNCE =====
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                const originalText = badge.textContent;
+                const badgeObserver = new MutationObserver(() => {
+                    if (badge.textContent !== originalText) {
+                        badge.classList.remove('bounce');
+                        void badge.offsetWidth;
+                        badge.classList.add('bounce');
+                    }
+                });
+                badgeObserver.observe(badge, { childList: true, characterData: true, subtree: true });
+            }
+        });
+    </script>
 </body>
 </html>
