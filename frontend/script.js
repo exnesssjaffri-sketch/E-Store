@@ -530,13 +530,35 @@ let inventoryProducts = [];
 let currentSearchTerm = '';
 
 // Check if user is authenticated (for write operations)
-async function requireAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-        window.location.href = 'login.html';
+const ADMIN_KEY = 'e-store-admin-auth';
+
+function isAdminAuthenticated() {
+    try {
+        const auth = JSON.parse(localStorage.getItem(ADMIN_KEY));
+        return auth && auth.isAdmin === true;
+    } catch {
         return false;
     }
-    return true;
+}
+
+async function requireAuth() {
+    // Check admin login first
+    if (isAdminAuthenticated()) {
+        return true;
+    }
+    
+    // Fall back to Supabase auth
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            return true;
+        }
+    } catch (e) {
+        console.error('Auth check error:', e);
+    }
+    
+    window.location.href = 'login.html';
+    return false;
 }
 
 // Static fallback products (used if the live backend is unreachable)

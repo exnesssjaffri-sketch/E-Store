@@ -271,5 +271,36 @@
     <script src="cart.js"></script>
     <script src="script.js"></script>
     <script src="mobile.js"></script>
+    <script>
+        // ========== ADMIN AUTH CHECK ==========
+        // Check if user is logged in as admin before allowing access to inventory
+        document.addEventListener('DOMContentLoaded', () => {
+            const ADMIN_KEY = 'e-store-admin-auth';
+            let isAuthenticated = false;
+            
+            try {
+                const auth = JSON.parse(localStorage.getItem(ADMIN_KEY));
+                if (auth && auth.isAdmin === true) {
+                    isAuthenticated = true;
+                }
+            } catch (e) {
+                console.error('Auth check error:', e);
+            }
+            
+            // Also check Supabase session
+            if (!isAuthenticated) {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabase.auth.getUser().then(({ data }) => {
+                    if (data && data.user) {
+                        isAuthenticated = true;
+                    } else {
+                        window.location.href = 'login.html';
+                    }
+                }).catch(() => {
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

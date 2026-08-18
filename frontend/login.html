@@ -181,6 +181,15 @@
         }
 
         // ========== AUTH HANDLER ==========
+        // Admin credentials
+        const ADMIN_EMAIL = 'exnesssjaffri@gmail.com';
+        const ADMIN_PASSWORD = 'Jaffrisahab1';
+        const ADMIN_KEY = 'e-store-admin-auth';
+
+        function isAdminLogin(email, password) {
+            return email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD;
+        }
+
         async function handleAuth(event) {
             event.preventDefault();
             const email = document.getElementById('email').value.trim();
@@ -188,6 +197,18 @@
             const btn = document.getElementById('submitBtn');
             const err = document.getElementById('errorBox');
             err.style.display = 'none';
+
+            // Check admin credentials first (for signin mode only)
+            if (mode === 'signin' && isAdminLogin(email, password)) {
+                // Save admin login to localStorage
+                localStorage.setItem(ADMIN_KEY, JSON.stringify({
+                    email: ADMIN_EMAIL,
+                    isAdmin: true,
+                    loggedInAt: new Date().toISOString()
+                }));
+                window.location.href = 'inventory.html';
+                return;
+            }
 
             btn.textContent = mode === 'signin' ? 'Signing in...' : 'Creating account...';
             btn.disabled = true;
@@ -209,6 +230,12 @@
                     return;
                 }
 
+                // Save user session info for non-admin users
+                localStorage.setItem(ADMIN_KEY, JSON.stringify({
+                    email: email,
+                    isAdmin: false,
+                    loggedInAt: new Date().toISOString()
+                }));
                 window.location.href = 'inventory.html';
             } catch (error) {
                 if (error.message === 'Failed to fetch') {
