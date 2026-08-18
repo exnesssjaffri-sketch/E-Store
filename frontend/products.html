@@ -294,7 +294,16 @@
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const products = [];
 
-// Load products from Supabase
+// Show static products immediately so the grid is never empty,
+// then try to upgrade from the backend when available.
+(function renderStaticProducts() {
+  const staticProducts = getStaticProducts();
+  products.length = 0;
+  staticProducts.forEach(p => products.push(p));
+  renderProducts(products);
+})();
+
+// Load products from Supabase (overwrites static list when data is available)
 async function loadProductsFromBackend() {
   try {
     const { data, error } = await supabase
@@ -311,10 +320,10 @@ async function loadProductsFromBackend() {
       return;
     }
   } catch (err) {
-    console.error('Failed to load products from backend:', err);
+    console.error('Failed to load products from backend, using static list:', err);
   }
   
-  // Fallback to static products if backend fails
+  // Fallback to static products if backend fails or returns nothing
   const staticProducts = getStaticProducts();
   products.length = 0;
   staticProducts.forEach(p => products.push(p));
@@ -496,6 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCart();
   updateCartCount();
   initScrollReveal();
+  // Products are already rendered via static fallback;
+  // this call upgrades them from Supabase if data exists.
   loadProductsFromBackend();
 });
 
