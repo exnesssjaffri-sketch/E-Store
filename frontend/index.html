@@ -1,466 +1,505 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0F172A">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>E Store — Trusted Electronics Shopping Online</title>
-    <meta name="description" content="Discover a wide range of electronics at E Store. Trusted by thousands, built on customer relationships. Shop laptops, gadgets, and more with reliable delivery.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="cart.css">
-    <link rel="stylesheet" href="mobile.css">
-    <style>
-        /* ===== ANIMATION KEYFRAMES ===== */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.85); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.3); }
-            50% { opacity: 1; transform: scale(1.05); }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); }
-        }
-        @keyframes badgeBounce {
-            0% { transform: scale(1); }
-            30% { transform: scale(1.4); }
-            60% { transform: scale(0.9); }
-            100% { transform: scale(1); }
-        }
-        @keyframes cartSlideIn {
-            from { transform: translateX(100%); opacity: 0.5; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes heroFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-            50% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUXE — Home</title>
+<style>
 
-        /* ===== HERO ANIMATIONS ===== */
-        .hero-animate {
-            opacity: 0;
-            animation: fadeUp 0.8s ease forwards;
-        }
-        .hero-animate:nth-child(1) { animation-delay: 0.1s; }
-        .hero-animate:nth-child(2) { animation-delay: 0.3s; }
-        .hero-animate:nth-child(3) { animation-delay: 0.5s; }
-        .hero-animate:nth-child(4) { animation-delay: 0.7s; }
-        .hero-image.hero-animate { animation: scaleIn 1s ease 0.6s forwards, heroFloat 5s ease-in-out 1.6s infinite; }
-        .hero-cta .btn { animation: pulseGlow 2.5s ease-in-out infinite; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --text: #111;
+    --text-secondary: #555;
+    --text-muted: #888;
+    --border: #e5e5e5;
+    --surface: #fff;
+    --surface-muted: #f6f6f6;
+    --danger: #dc2626;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --shadow: 0 16px 32px rgba(0,0,0,0.06);
+    --shadow-lg: 0 24px 48px rgba(0,0,0,0.1);
+    --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    --transition-slow: 0.4s cubic-bezier(0.4,0,0.2,1);
+    --transition-bounce: 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); background: var(--surface); line-height: 1.5; }
 
-        /* ===== SCROLL REVEAL ===== */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .reveal-delay-1 { transition-delay: 0.15s; }
-        .reveal-delay-2 { transition-delay: 0.3s; }
-        .reveal-delay-3 { transition-delay: 0.45s; }
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  @keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
 
-        /* ===== CARD HOVER LIFT + SHADOW ===== */
-        .work-card, .stat-item, .product-card, .feature-item, .journey-stat-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .work-card:hover, .stat-item:hover, .product-card:hover, .feature-item:hover, .journey-stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-        }
+  .animate-fade-up { animation: fadeUp 0.6s var(--transition) forwards; opacity: 0; }
+  .animate-fade-in { animation: fadeIn 0.5s var(--transition) forwards; opacity: 0; }
+  .animate-scale-in { animation: scaleIn 0.5s var(--transition) forwards; opacity: 0; }
+  .animate-bounce-in { animation: bounceIn 0.6s var(--transition-bounce) forwards; opacity: 0; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+  .delay-6 { animation-delay: 0.6s; }
 
-        /* ===== BUTTON PRESS FEEDBACK ===== */
-        .btn, button, .filter-btn {
-            transition: transform 0.15s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-        }
-        .btn:active, button:active, .filter-btn:active {
-            transform: scale(0.95);
-        }
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: all 0.7s var(--transition); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-40px); transition: all 0.7s var(--transition); }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(40px); transition: all 0.7s var(--transition); }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+  .reveal-scale { opacity: 0; transform: scale(0.95); transition: all 0.7s var(--transition); }
+  .reveal-scale.visible { opacity: 1; transform: scale(1); }
 
-        /* ===== NAV LINK ANIMATED UNDERLINE ===== */
-        .nav-link {
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--color-accent, #2563EB);
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after, .nav-link.active::after {
-            width: 100%;
-        }
+  /* Stagger children */
+  .stagger-children > * { opacity: 0; transform: translateY(20px); transition: all 0.5s var(--transition); }
+  .stagger-children.visible > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.05s; }
+  .stagger-children.visible > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+  .stagger-children.visible > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+  .stagger-children.visible > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+  .stagger-children.visible > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.25s; }
+  .stagger-children.visible > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
+  .stagger-children.visible > *:nth-child(7) { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+  .stagger-children.visible > *:nth-child(8) { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
+  .stagger-children.visible > *:nth-child(9) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+  .stagger-children.visible > *:nth-child(10) { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+  .stagger-children.visible > *:nth-child(11) { opacity: 1; transform: translateY(0); transition-delay: 0.55s; }
+  .stagger-children.visible > *:nth-child(12) { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
 
-        /* ===== CART BADGE BOUNCE ===== */
-        .cart-badge.bounce {
-            animation: badgeBounce 0.5s ease;
-        }
+  /* ===== TOAST ===== */
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--text); color: var(--surface); padding: 14px 28px; border-radius: var(--radius-md); font-size: 14px; font-weight: 500; z-index: 100; opacity: 0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; box-shadow: var(--shadow-lg); }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* ===== CART SIDEBAR SLIDE ===== */
-        .cart-sidebar.open {
-            animation: cartSlideIn 0.4s ease forwards;
-        }
-        .cart-backdrop.open {
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-        }
+  /* ===== NAVBAR ===== */
+  .navbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--border); gap: 24px; position: sticky; top: 0; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); z-index: 30; animation: slideDown 0.5s var(--transition) forwards; }
+  .logo { font-size: 22px; font-weight: 600; letter-spacing: 3px; text-decoration: none; color: var(--text); position: relative; transition: letter-spacing 0.3s; }
+  .logo:hover { letter-spacing: 5px; }
+  .search-bar { flex: 1; max-width: 380px; display: flex; gap: 8px; }
+  .search-bar input { flex: 1; padding: 10px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font: inherit; outline: none; transition: all 0.3s; }
+  .search-bar input:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,0.05); transform: translateY(-1px); }
+  .search-bar button { padding: 10px 20px; background: var(--text); color: var(--surface); border: none; border-radius: var(--radius-sm); font: inherit; font-weight: 500; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+  .search-bar button:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .search-bar button:active { transform: translateY(0) scale(0.97); }
+  .nav-links { display: flex; align-items: center; gap: 24px; }
+  .nav-links a { text-decoration: none; color: var(--text-secondary); font-size: 15px; font-weight: 500; transition: color 0.3s; position: relative; padding-bottom: 4px; }
+  .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 50%; right: 50%; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s var(--transition); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { left: 0; right: 0; }
+  .nav-links a.active { color: var(--text); }
+  .nav-links a.active::after { left: 0; right: 0; }
+  .cart-btn { position: relative; background: none; border: none; cursor: pointer; padding: 8px; color: var(--text); display: flex; align-items: center; transition: transform 0.2s; }
+  .cart-btn:hover { transform: scale(1.1); }
+  .cart-btn:active { transform: scale(0.95); }
+  .cart-count { position: absolute; top: 2px; right: 2px; background: var(--text); color: var(--surface); font-size: 10px; font-weight: 600; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: bounceIn 0.4s var(--transition-bounce); }
 
-        /* ===== IMAGE ZOOM ON HOVER ===== */
-        .product-card .product-image img,
-        .product-card img {
-            transition: transform 0.4s ease;
-        }
-        .product-card:hover .product-image img,
-        .product-card:hover img {
-            transform: scale(1.08);
-        }
+  /* ===== SECTIONS ===== */
+  .section { padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-title { font-size: 32px; font-weight: 600; margin-bottom: 40px; text-align: center; }
 
-        /* ===== STAT COUNTER HOVER ===== */
-        .stat-number {
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-        .stat-item:hover .stat-number {
-            transform: scale(1.15);
-            color: var(--color-accent, #2563EB);
-        }
+  /* ===== PRODUCTS ===== */
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .product-card { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); transition: all var(--transition-slow); opacity: 0; transform: translateY(30px); }
+  .product-card.visible { opacity: 1; transform: translateY(0); }
+  .product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: transparent; }
+  .product-img { height: 200px; display: flex; align-items: center; justify-content: center; background: var(--surface-muted); position: relative; overflow: hidden; }
+  .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--transition); }
+  .product-card:hover .product-img img { transform: scale(1.08); }
+  .product-img svg { width: 52px; height: 52px; color: var(--text-muted); transition: all 0.5s var(--transition); }
+  .product-card:hover .product-img svg { transform: scale(1.15) rotate(5deg); color: var(--text-secondary); }
+  .product-info { padding: 18px; }
+  .product-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .product-price { font-size: 18px; font-weight: 600; margin-bottom: 16px; font-variant-numeric: tabular-nums; color: var(--text); }
+  .add-to-cart { width: 100%; padding: 12px; background: var(--text); color: var(--surface); border: none; border-radius: var(--radius-sm); font: inherit; font-weight: 500; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+  .add-to-cart:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+  .add-to-cart:active { transform: translateY(0) scale(0.97); }
 
-        /* ===== STAGGERED GRID ITEMS ===== */
-        .grid-3 > *, .grid-4 > *, .grid-2 > * {
-            animation: fadeUp 0.6s ease both;
-        }
-        .grid-3 > *:nth-child(1), .grid-4 > *:nth-child(1), .grid-2 > *:nth-child(1) { animation-delay: 0.05s; }
-        .grid-3 > *:nth-child(2), .grid-4 > *:nth-child(2), .grid-2 > *:nth-child(2) { animation-delay: 0.15s; }
-        .grid-3 > *:nth-child(3), .grid-4 > *:nth-child(3), .grid-2 > *:nth-child(3) { animation-delay: 0.25s; }
-        .grid-4 > *:nth-child(4), .grid-2 > *:nth-child(4) { animation-delay: 0.35s; }
-        .grid-4 > *:nth-child(5) { animation-delay: 0.45s; }
-        .grid-4 > *:nth-child(6) { animation-delay: 0.55s; }
-        .grid-4 > *:nth-child(7) { animation-delay: 0.65s; }
-        .grid-4 > *:nth-child(8) { animation-delay: 0.75s; }
+  .empty-state { grid-column: 1 / -1; text-align: center; padding: 100px 20px; color: var(--text-muted); }
+  .empty-state svg { width: 72px; height: 72px; margin-bottom: 20px; color: var(--border); animation: float 3s ease-in-out infinite; }
+  .empty-state h3 { font-size: 20px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; }
 
-        /* ===== NEWSLETTER FORM ===== */
-        .newsletter-form input:focus {
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-            transform: scale(1.01);
-            transition: all 0.3s ease;
-        }
-    </style>
+  /* ===== CART ===== */
+  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: all var(--transition-slow); z-index: 40; backdrop-filter: blur(4px); }
+  .cart-overlay.open { opacity: 1; visibility: visible; }
+  .cart-sidebar { position: fixed; top: 0; right: 0; width: 420px; max-width: 90vw; height: 100%; background: var(--surface); border-left: 1px solid var(--border); transform: translateX(110%); transition: transform 0.5s cubic-bezier(0.32,0.72,0,1); z-index: 50; display: flex; flex-direction: column; box-shadow: -8px 0 32px rgba(0,0,0,0.08); }
+  .cart-sidebar.open { transform: translateX(0); }
+  .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .cart-header h3 { font-size: 18px; font-weight: 600; }
+  .cart-header button { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); transition: all 0.2s; }
+  .cart-header button:hover { background: var(--surface-muted); color: var(--text); transform: rotate(90deg); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
+  .cart-item { display: flex; gap: 14px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 12px; align-items: center; transition: all 0.3s; animation: slideInRight 0.4s var(--transition) forwards; }
+  .cart-item:hover { background: var(--surface-muted); transform: translateX(4px); border-color: var(--text-muted); }
+  .cart-item-img { width: 60px; height: 60px; border-radius: var(--radius-sm); flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--surface-muted); overflow: hidden; }
+  .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+  .cart-item-img svg { width: 28px; height: 28px; color: var(--text-muted); }
+  .cart-item-info { flex: 1; min-width: 0; }
+  .cart-item-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+  .cart-item-price { font-size: 13px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .qty-controls button { width: 28px; height: 28px; border: 1.5px solid var(--border); background: var(--surface); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text); transition: all 0.2s; }
+  .qty-controls button:hover { background: var(--text); color: var(--surface); border-color: var(--text); transform: scale(1.1); }
+  .qty-controls button:active { transform: scale(0.9); }
+  .remove-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 12px; margin-top: 4px; padding: 0; opacity: 0; transition: opacity 0.2s; }
+  .cart-item:hover .remove-btn { opacity: 1; }
+  .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); background: var(--surface); }
+  .cart-total { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+  .checkout-btn { width: 100%; padding: 14px; background: var(--text); color: var(--surface); border: none; border-radius: var(--radius-md); font: inherit; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+  .checkout-btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+  .checkout-btn:active { transform: translateY(0) scale(0.98); }
+  .empty-cart { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 14px; animation: fadeIn 0.5s var(--transition); }
+
+  /* ===== FOOTER ===== */
+  .footer { border-top: 1px solid var(--border); padding: 48px 24px; text-align: center; color: var(--text-muted); font-size: 14px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .navbar { padding: 12px 16px; gap: 12px; flex-wrap: wrap; }
+    .search-bar { order: 3; max-width: none; width: 100%; }
+    .nav-links { gap: 16px; order: 2; }
+    .section { padding: 56px 16px; }
+    .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .cart-sidebar { width: 100%; max-width: none; }
+  }
+
+  /* ===== HERO ===== */
+  .hero { text-align: center; padding: 100px 24px 60px; background: linear-gradient(180deg, var(--surface-muted) 0%, var(--surface) 100%); }
+  .hero h1 { font-size: 48px; font-weight: 600; margin-bottom: 16px; animation: fadeUp 0.7s var(--transition) forwards; opacity: 0; }
+  .hero p { color: var(--text-secondary); font-size: 18px; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; animation: fadeUp 0.7s var(--transition) 0.12s forwards; opacity: 0; }
+  .hero .btn { display: inline-block; padding: 14px 36px; background: var(--text); color: var(--surface); text-decoration: none; border-radius: var(--radius-md); font-weight: 500; font-size: 15px; transition: all 0.3s; animation: fadeUp 0.7s var(--transition) 0.24s forwards; opacity: 0; }
+  .hero .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+  .hero .btn:active { transform: translateY(0) scale(0.97); }
+
+  /* ===== FEATURES ===== */
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .feature-card { padding: 32px 24px; border: 1px solid var(--border); border-radius: var(--radius-lg); text-align: center; transition: all var(--transition-slow); }
+  .feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); border-color: transparent; }
+  .feature-card svg { width: 40px; height: 40px; color: var(--text); margin-bottom: 16px; transition: transform 0.4s var(--transition-bounce); }
+  .feature-card:hover svg { transform: scale(1.2) rotate(5deg); }
+  .feature-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .feature-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ===== CATEGORIES ===== */
+  .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .category-card { padding: 40px 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); text-align: center; text-decoration: none; color: var(--text); transition: all var(--transition-slow); display: block; }
+  .category-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); border-color: transparent; }
+  .category-card svg { width: 36px; height: 36px; color: var(--text-secondary); margin-bottom: 12px; transition: all 0.4s var(--transition-bounce); }
+  .category-card:hover svg { transform: scale(1.2); color: var(--text); }
+  .category-card h3 { font-size: 16px; font-weight: 600; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 32px; }
+    .hero { padding: 70px 16px 40px; }
+  }
+</style>
+<base target="_blank">
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- ========== NAVBAR ========== -->
-    <nav class="navbar transparent" aria-label="Main navigation">
-        <div class="container">
-            <a href="index.html" class="nav-logo" aria-label="E Store Home">
-                <span class="logo-icon">⚡</span>
-                E Store
-            </a>
-            <div class="navbar-search" role="search">
-                <input type="search" placeholder="Search products..." aria-label="Search products">
-            </div>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">Home</a>
-                <a href="products.html" class="nav-link">Products</a>
-                <a href="about.html" class="nav-link">About Us</a>
-                <a href="services.html" class="nav-link">Services</a>
-                <a href="blogs.html" class="nav-link">Blogs</a>
-                <a href="contact.html" class="nav-link">Contact Us</a>
-                <a href="login.html" class="nav-link">Login</a>
-                <a href="inventory.html" class="nav-link">Inventory</a>
-            </div>
-            <div class="nav-right">
-                <div class="language-toggle" aria-label="Language selector">
-                    <span>🌐</span>
-                    <span>EN</span>
-                    <div class="language-dropdown">
-                        <button data-lang="en" class="active">English</button>
-                        <button data-lang="ur">اردو</button>
-                        <button data-lang="ar">العربية</button>
-                    </div>
-                </div>
-                <a href="login.html" class="btn btn-primary btn-small">Login</a>
-                <a href="inventory.html" class="btn btn-primary btn-small">Inventory</a>
-                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
+<div class="toast" id="toast"></div>
 
-    <!-- Mobile Menu - Complete site structure with ALL features -->
-    <div class="mobile-menu-backdrop"></div>
-    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
-        <div class="mobile-menu-search" role="search">
-            <input type="search" placeholder="Search products..." aria-label="Search products">
-        </div>
-        <a href="index.html" class="nav-link active">Home</a>
-        <a href="products.html" class="nav-link">Products</a>
-        <a href="about.html" class="nav-link">About Us</a>
-        <a href="services.html" class="nav-link">Services</a>
-        <a href="blogs.html" class="nav-link">Blogs</a>
-        <a href="contact.html" class="nav-link">Contact Us</a>
-        <a href="login.html" class="nav-link">Login</a>
-        <a href="inventory.html" class="nav-link">Inventory</a>
-        <div class="mobile-menu-actions">
-            <div class="language-toggle" aria-label="Language selector">
-                <span>🌐</span>
-                <span>EN</span>
-                <div class="language-dropdown">
-                    <button data-lang="en" class="active">English</button>
-                    <button data-lang="ur">اردو</button>
-                    <button data-lang="ar">العربية</button>
-                </div>
-            </div>
-            <a href="login.html" class="btn btn-primary">Login / Sign Up</a>
-            <a href="inventory.html" class="btn btn-outline">Inventory Dashboard</a>
-        </div>
+
+<nav class="navbar">
+  <a href="index.html" class="logo">LUXE</a>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search products..." onkeyup="if(event.key==='Enter')searchProducts()">
+    <button onclick="searchProducts()">Search</button>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="products.html" class="">Products</a>
+    <a href="about.html" class="">About us</a>
+    <a href="contact.html" class="">Contact us</a>
+    <button class="cart-btn" onclick="toggleCart()" aria-label="Open cart">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+
+<div class="hero">
+  <h1>Discover Luxury,<br>Redefined</h1>
+  <p>Explore our curated collection of premium products — from cutting-edge electronics to timeless fashion. Quality you can feel, prices you will love.</p>
+  <a href="products.html" class="btn">Shop Now</a>
+</div>
+
+<section class="section">
+  <h2 class="section-title reveal">Why choose LUXE?</h2>
+  <div class="features-grid stagger-children">
+    <div class="feature-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <h3>Quality Guaranteed</h3>
+      <p>Every product is handpicked and tested to meet our strict quality standards.</p>
     </div>
+    <div class="feature-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      <h3>Fast Delivery</h3>
+      <p>Quick, reliable shipping right to your doorstep. Track your order every step of the way.</p>
+    </div>
+    <div class="feature-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <h3>24/7 Support</h3>
+      <p>Our dedicated support team is always here to help you with any questions.</p>
+    </div>
+    <div class="feature-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <h3>Secure Payments</h3>
+      <p>Shop with confidence using our encrypted, secure payment gateway.</p>
+    </div>
+  </div>
+</section>
 
-    <main id="main-content">
-        <!-- ========== HERO SECTION ========== -->
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <p class="eyebrow hero-animate">WELCOME TO E STORE</p>
-                    <h1 class="hero-animate" style="color: var(--color-white);">Electronics You Can Trust,<br>Service You Can Rely On</h1>
-                    <p class="hero-animate" style="color: var(--color-hero-text); font-size: 18px; margin: 20px 0 32px; max-width: 600px;">
-                        From laptops to smart gadgets, we bring the world's best electronics to your doorstep. Built on trust, powered by our customers.
-                    </p>
-                    <div class="hero-cta hero-animate">
-                        <a href="contact.html" class="btn btn-primary btn-large">Shop Now</a>
-                        <a href="about.html" class="btn btn-secondary btn-large">Learn More</a>
-                    </div>
-                </div>
-                <div class="hero-image hero-animate">
-                    <img src="https://via.placeholder.com/500x400?text=Electronics+3D+Render" alt="Electronics showcase" loading="lazy">
-                </div>
-            </div>
-        </section>
+<section class="section" style="padding-top: 0;">
+  <h2 class="section-title reveal">Shop by category</h2>
+  <div class="categories-grid stagger-children">
+    <a href="products.html" class="category-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <h3>Electronics</h3>
+    </a>
+    <a href="products.html" class="category-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+      <h3>Fashion</h3>
+    </a>
+    <a href="products.html" class="category-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <h3>Home</h3>
+    </a>
+    <a href="products.html" class="category-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <h3>Accessories</h3>
+    </a>
+  </div>
+</section>
 
-        <!-- ========== WORK SECTION ========== -->
-        <section class="section">
-            <div class="container">
-                <div class="section-header reveal">
-                    <p class="eyebrow">OUR WORK</p>
-                    <h2>Why Our Customers Choose Us</h2>
-                    <p class="section-subtitle">In a world full of electronics stores, here's what makes E Store different.</p>
-                </div>
-                <div class="grid-3">
-                    <div class="work-card reveal reveal-delay-1">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        </svg>
-                        <h3>Built on Trust</h3>
-                        <p>There are many websites selling electronics, but our customers choose us because we don't just sell products — we build lasting relationships. Every order is a promise we keep, and every customer becomes part of the E Store family. That connection? Nobody else has it.</p>
-                    </div>
-                    <div class="work-card reveal reveal-delay-2">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                        <h3>Premium Quality</h3>
-                        <p>We handpick every product in our catalog. From flagship laptops to everyday accessories, we ensure every item meets our strict quality standards before it reaches you.</p>
-                    </div>
-                    <div class="work-card reveal reveal-delay-3">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                        <h3>Customers Come First</h3>
-                        <p>Our business grows because our customers grow with us. We listen, we adapt, and we constantly improve based on what you need. Your feedback shapes our store.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+<section class="section" style="padding-top: 0;">
+  <h2 class="section-title reveal">Featured products</h2>
+  <div class="products-grid" id="productsGrid">
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <h3>No products yet</h3>
+      <p>Products will appear here once added from your backend.</p>
+    </div>
+  </div>
+</section>
 
-        <!-- ========== EXPERIENCE SECTION ========== -->
-        <section class="section section-light">
-            <div class="container">
-                <div class="about-content">
-                    <div class="about-text reveal">
-                        <p class="eyebrow">OUR JOURNEY</p>
-                        <h2>From Hardships to Excellence</h2>
-                        <p>When we started E Store, the road wasn't easy. Building an electronics business from the ground up came with countless challenges — supply chain issues, technical setbacks, and the uphill battle of earning customer trust in a crowded market.</p>
-                        <p>But there was one thing that stayed with us through it all: our customers. They believed in us when we were just starting out. They gave us a chance, shared their feedback, and grew alongside us. That belief became our foundation.</p>
-                        <p>Today, our customers tell us we're the most trustable electronics website on the internet. That's not just a compliment — it's our responsibility. Every day, we work to live up to that trust.</p>
-                        <div class="stats-row">
-                            <div class="stat-item">
-                                <div class="stat-number">5+</div>
-                                <div class="stat-label">Years of Trust</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number">10,000+</div>
-                                <div class="stat-label">Happy Customers</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number">99%</div>
-                                <div class="stat-label">Satisfaction Rate</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="about-image reveal reveal-delay-2">
-                        <img src="https://via.placeholder.com/600x400?text=Our+Journey+Team" alt="Our journey" loading="lazy">
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- ========== REVIEWS SECTION ========== -->
-        <section class="section section-dark">
-            <div class="container">
-                <div class="section-header reveal">
-                    <p class="eyebrow" style="color: var(--color-accent);">TESTIMONIALS</p>
-                    <h2 style="color: var(--color-white);">What Our Customers Say</h2>
-                    <p class="section-subtitle" style="color: #94A3B8;">Real experiences from real customers.</p>
-                </div>
-                <div class="grid-2" id="reviewsContainer">
-                    <!-- Dynamically loaded from API -->
-                </div>
-            </div>
-        </section>
+<footer class="footer">
+  <p>&copy; 2026 LUXE. All rights reserved.</p>
+</footer>
 
-        <!-- ========== FEATURED PRODUCTS ========== -->
-        <section class="section">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2>Explore Our Electronics</h2>
-                    <p class="section-subtitle">From the latest laptops to essential accessories.</p>
-                </div>
-                <div class="grid-4" id="featuredProducts">
-                    <!-- Dynamically loaded from API -->
-                </div>
-                <div style="text-align: center; margin-top: 40px;">
-                    <a href="products.html" class="btn btn-outline">View All Products</a>
-                </div>
-            </div>
-        </section>
 
-        <!-- ========== NEWSLETTER SECTION ========== -->
-        <section class="newsletter-section">
-            <div class="container">
-                <h2>Stay Updated with Latest Electronics</h2>
-                <p>Subscribe for exclusive deals and new arrivals.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Enter your email address" required aria-label="Email address">
-                    <button type="submit">Subscribe</button>
-                </form>
-            </div>
-        </section>
-    </main>
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Your cart</h3>
+    <button onclick="toggleCart()">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="empty-cart">Your cart is empty</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">Total <span id="cartTotal">Rs. 0</span></div>
+    <button class="checkout-btn" onclick="checkout()">Checkout</button>
+  </div>
+</aside>
 
-    <!-- ========== FOOTER ========== -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-column">
-                    <h4><span style="color: var(--color-accent);">⚡</span> E Store</h4>
-                    <p>Your trusted electronics destination.</p>
-                    <div class="footer-social">
-                        <a href="#" aria-label="Facebook">f</a>
-                        <a href="#" aria-label="Instagram">ig</a>
-                        <a href="#" aria-label="Twitter">X</a>
-                        <a href="#" aria-label="LinkedIn">in</a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="blogs.html">Blogs</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Customer Service</h4>
-                    <ul>
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                        <li><a href="#">Order Tracking</a></li>
-                        <li><a href="#">Support</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Contact Info</h4>
-                    <ul>
-                        <li><a href="mailto:exnesssjaffri@gmail.com">exnesssjaffri@gmail.com</a></li>
-                        <li><a href="tel:03332561434">0333 2561434</a></li>
-                        <li>Main Business District, City, Country</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2026 E Store. All rights reserved.</p>
-                <div class="payment-icons">
-                    <span>Visa</span>
-                    <span>Mastercard</span>
-                    <span>PayPal</span>
-                </div>
-            </div>
-        </div>
-    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="cart.js"></script>
-    <script src="script.js"></script>
-    <script src="mobile.js"></script>
-    <script>
-        // ===== SCROLL REVEAL (IntersectionObserver) =====
-        document.addEventListener('DOMContentLoaded', function() {
-            const revealElements = document.querySelectorAll('.reveal');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-            revealElements.forEach(el => observer.observe(el));
+<script>
+// ============================================
+// BACKEND: Replace this array with your API data
+// Format: { id, name, price, image, category }
+// ============================================
+const products = [];
 
-            // ===== CART BADGE BOUNCE =====
-            const badge = document.querySelector('.cart-badge');
-            if (badge) {
-                const originalText = badge.textContent;
-                const badgeObserver = new MutationObserver(() => {
-                    if (badge.textContent !== originalText) {
-                        badge.classList.remove('bounce');
-                        void badge.offsetWidth;
-                        badge.classList.add('bounce');
-                    }
-                });
-                badgeObserver.observe(badge, { childList: true, characterData: true, subtree: true });
-            }
-        });
-    </script>
+function renderProducts(list) {
+  const grid = document.getElementById('productsGrid');
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg><h3>No products yet</h3><p>Products will appear here once added from your backend.</p></div>';
+    return;
+  }
+  grid.innerHTML = list.map((p, i) => {
+    const imgHtml = p.image
+      ? '<img src="' + p.image + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'' + getPlaceholderIcon().replace(/"/g, '"') + '\'">'
+      : getPlaceholderIcon();
+    return '<div class="product-card" style="transition-delay:' + (i * 0.06) + 's"><div class="product-img">' + imgHtml + '</div><div class="product-info"><div class="product-title">' + p.name + '</div><div class="product-price">Rs. ' + p.price.toLocaleString() + '</div><button class="add-to-cart" onclick="addToCart(' + p.id + ')">Add to cart</button></div></div>';
+  }).join('');
+  setTimeout(() => {
+    document.querySelectorAll('.product-card').forEach((card, i) => {
+      setTimeout(() => card.classList.add('visible'), i * 60);
+    });
+  }, 50);
+}
+
+function searchProducts() {
+  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (query) window.location.href = 'products.html?q=' + encodeURIComponent(query);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function getPlaceholderIcon() {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+}
+
+function saveCart() {
+  localStorage.setItem('luxe_cart', JSON.stringify(cart));
+}
+
+function loadCart() {
+  const saved = localStorage.getItem('luxe_cart');
+  return saved ? JSON.parse(saved) : [];
+}
+
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotal');
+  if (cart.length === 0) {
+    container.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+    totalEl.textContent = 'Rs. 0';
+    return;
+  }
+  container.innerHTML = cart.map((item, i) => {
+    const imgHtml = item.image
+      ? '<img src="' + item.image + '" alt="' + item.name + '" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'' + getPlaceholderIcon().replace(/"/g, '"') + '\'">'
+      : getPlaceholderIcon();
+    return '<div class="cart-item" style="animation-delay:' + (i * 0.05) + 's"><div class="cart-item-img">' + imgHtml + '</div><div class="cart-item-info"><div class="cart-item-title">' + item.name + '</div><div class="cart-item-price">Rs. ' + item.price.toLocaleString() + '</div><div class="qty-controls"><button onclick="updateQty(' + item.id + ', -1)">−</button><span style="font-size:14px;font-weight:600;min-width:20px;text-align:center">' + item.qty + '</span><button onclick="updateQty(' + item.id + ', 1)">+</button></div><button class="remove-btn" onclick="removeFromCart(' + item.id + ')">Remove</button></div></div>';
+  }).join('');
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  totalEl.textContent = 'Rs. ' + total.toLocaleString();
+}
+
+function updateCartCount() {
+  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  const badge = document.getElementById('cartCount');
+  badge.textContent = count;
+  if (count > 0) {
+    badge.style.animation = 'none';
+    badge.offsetHeight;
+    badge.style.animation = 'bounceIn 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+  }
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+}
+
+function addToCart(id) {
+  const item = cart.find(c => c.id === id);
+  if (item) {
+    item.qty++;
+  } else {
+    const product = products.find(p => p.id === id);
+    if (!product) return;
+    cart.push({ ...product, qty: 1 });
+  }
+  saveCart();
+  renderCart();
+  updateCartCount();
+  showToast('Added to cart');
+  const sidebar = document.getElementById('cartSidebar');
+  const overlay = document.getElementById('cartOverlay');
+  if (!sidebar.classList.contains('open')) {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+  }
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  saveCart();
+  renderCart();
+  updateCartCount();
+}
+
+function updateQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    removeFromCart(id);
+    return;
+  }
+  saveCart();
+  renderCart();
+  updateCartCount();
+}
+
+function checkout() {
+  if (cart.length === 0) return;
+  showToast('Checkout: ' + document.getElementById('cartTotal').textContent);
+}
+
+// Scroll reveal observer
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger-children').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+let cart = loadCart();
+document.addEventListener('DOMContentLoaded', () => {
+  renderCart();
+  updateCartCount();
+  initScrollReveal();
+  renderProducts(products);
+});
+
+</script>
+
 </body>
 </html>
