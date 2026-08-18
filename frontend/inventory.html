@@ -14,6 +14,621 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cart.css">
     <link rel="stylesheet" href="mobile.css">
+    <style>
+        /* ========== INVENTORY DASHBOARD - E-STORE THEME ========== */
+        :root {
+            --inv-primary: #0F172A;
+            --inv-secondary: #2563EB;
+            --inv-accent: #F97316;
+            --inv-bg: #F8FAFC;
+            --inv-card: #FFFFFF;
+            --inv-text: #1E293B;
+            --inv-text-secondary: #64748B;
+            --inv-border: #E2E8F0;
+            --inv-success: #16A34A;
+            --inv-warning: #F59E0B;
+            --inv-danger: #DC2626;
+            --inv-gradient: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #2563EB 100%);
+            --inv-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --inv-shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        /* Dashboard Layout */
+        .inv-dashboard {
+            padding: 24px 0 60px;
+        }
+
+        .inv-header {
+            background: var(--inv-gradient);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inv-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .inv-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60%;
+            left: 20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .inv-header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .inv-header h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .inv-header p {
+            color: rgba(255,255,255,0.8);
+            margin: 8px 0 0;
+            font-size: 14px;
+        }
+
+        .inv-header-badge {
+            background: rgba(249,115,22,0.2);
+            border: 1px solid rgba(249,115,22,0.4);
+            color: #F97316;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Stats Grid */
+        .inv-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .inv-stat-card {
+            background: var(--inv-card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--inv-shadow);
+            border: 1px solid var(--inv-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inv-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--inv-shadow-lg);
+        }
+
+        .inv-stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .inv-stat-card:nth-child(1)::after { background: var(--inv-secondary); }
+        .inv-stat-card:nth-child(2)::after { background: var(--inv-accent); }
+        .inv-stat-card:nth-child(3)::after { background: var(--inv-success); }
+        .inv-stat-card:nth-child(4)::after { background: #8B5CF6; }
+
+        .inv-stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .inv-stat-card:nth-child(1) .inv-stat-icon { background: rgba(37,99,235,0.1); }
+        .inv-stat-card:nth-child(2) .inv-stat-icon { background: rgba(249,115,22,0.1); }
+        .inv-stat-card:nth-child(3) .inv-stat-icon { background: rgba(22,163,74,0.1); }
+        .inv-stat-card:nth-child(4) .inv-stat-icon { background: rgba(139,92,246,0.1); }
+        .inv-stat-card:nth-child(2) .inv-stat-icon { background: rgba(249,115,22,0.1); }
+        .inv-stat-card:nth-child(3) .inv-stat-icon { background: rgba(22,163,74,0.1); }
+        .inv-stat-card:nth-child(4) .inv-stat-icon { background: rgba(139,92,246,0.1); }
+
+        .inv-stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--inv-primary);
+            line-height: 1.2;
+        }
+
+        .inv-stat-label {
+            font-size: 13px;
+            color: var(--inv-text-secondary);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Toolbar */
+        .inv-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: var(--inv-card);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--inv-border);
+            box-shadow: var(--inv-shadow);
+        }
+
+        .inv-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .inv-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .inv-search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .inv-search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid var(--inv-border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--inv-bg);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .inv-search-box input:focus {
+            outline: none;
+            border-color: var(--inv-secondary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .inv-search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        .inv-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .inv-btn-primary {
+            background: var(--inv-secondary);
+            color: white;
+        }
+
+        .inv-btn-primary:hover {
+            background: #1D4ED8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .inv-btn-outline {
+            background: transparent;
+            border: 1px solid var(--inv-border);
+            color: var(--inv-text);
+        }
+
+        .inv-btn-outline:hover {
+            border-color: var(--inv-secondary);
+            color: var(--inv-secondary);
+        }
+
+        .inv-btn-accent {
+            background: var(--inv-accent);
+            color: white;
+        }
+
+        .inv-btn-accent:hover {
+            background: #EA580C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249,115,22,0.3);
+        }
+
+        /* Table */
+        .inv-table-wrapper {
+            background: var(--inv-card);
+            border-radius: 12px;
+            border: 1px solid var(--inv-border);
+            box-shadow: var(--inv-shadow);
+            overflow: hidden;
+        }
+
+        .inv-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inv-table thead {
+            background: var(--inv-primary);
+        }
+
+        .inv-table th {
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 16px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .inv-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--inv-border);
+            font-size: 14px;
+            color: var(--inv-text);
+            vertical-align: middle;
+        }
+
+        .inv-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .inv-table tbody tr:hover {
+            background: rgba(37,99,235,0.03);
+        }
+
+        .inv-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .inv-product-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--inv-border);
+        }
+
+        .inv-category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(37,99,235,0.1);
+            color: var(--inv-secondary);
+        }
+
+        .inv-price {
+            font-weight: 600;
+            color: var(--inv-primary);
+        }
+
+        .inv-stock {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .inv-stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .inv-stock-ok .inv-stock-dot { background: var(--inv-success); }
+        .inv-stock-low .inv-stock-dot { background: var(--inv-warning); }
+        .inv-stock-out .inv-stock-dot { background: var(--inv-danger); }
+
+        .inv-stock-ok { color: var(--inv-success); }
+        .inv-stock-low { color: var(--inv-warning); }
+        .inv-stock-out { color: var(--inv-danger); }
+
+        .inv-action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .inv-action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .inv-edit-btn {
+            background: rgba(37,99,235,0.1);
+            color: var(--inv-secondary);
+        }
+
+        .inv-edit-btn:hover {
+            background: var(--inv-secondary);
+            color: white;
+        }
+
+        .inv-delete-btn {
+            background: rgba(220,38,38,0.1);
+            color: var(--inv-danger);
+        }
+
+        .inv-delete-btn:hover {
+            background: var(--inv-danger);
+            color: white;
+        }
+
+        /* Loading & Empty States */
+        .inv-loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .inv-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--inv-border);
+            border-top-color: var(--inv-secondary);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: inv-spin 0.8s linear infinite;
+        }
+
+        @keyframes inv-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .inv-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--inv-text-secondary);
+        }
+
+        .inv-empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* Warning Banner */
+        .inv-warning {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Modal */
+        .inv-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .inv-modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .inv-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            width: 90%;
+            max-width: 520px;
+            z-index: 1001;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .inv-modal.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .inv-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .inv-modal-header h3 {
+            color: var(--inv-primary);
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .inv-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: var(--inv-bg);
+            color: var(--inv-text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .inv-modal-close:hover {
+            background: var(--inv-danger);
+            color: white;
+        }
+
+        .inv-form-group {
+            margin-bottom: 16px;
+        }
+
+        .inv-form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--inv-text);
+            margin-bottom: 6px;
+        }
+
+        .inv-form-group input,
+        .inv-form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--inv-border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .inv-form-group input:focus,
+        .inv-form-group textarea:focus {
+            outline: none;
+            border-color: var(--inv-secondary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .inv-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .inv-modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .inv-modal-actions .inv-btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .inv-header {
+                padding: 24px;
+            }
+
+            .inv-header h1 {
+                font-size: 22px;
+            }
+
+            .inv-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .inv-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .inv-toolbar-left,
+            .inv-toolbar-right {
+                width: 100%;
+            }
+
+            .inv-search-box {
+                min-width: 100%;
+            }
+
+            .inv-table-wrapper {
+                overflow-x: auto;
+            }
+
+            .inv-table {
+                min-width: 700px;
+            }
+
+            .inv-form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .inv-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -59,7 +674,7 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu - Complete site structure with ALL features -->
+    <!-- Mobile Menu -->
     <div class="mobile-menu-backdrop"></div>
     <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
         <div class="mobile-menu-search" role="search">
@@ -89,218 +704,696 @@
     </div>
 
     <main id="main-content">
-        <!-- ========== PAGE HEADER ========== -->
-        <section class="page-header" style="background: linear-gradient(135deg, var(--color-primary) 0%, #1E293B 100%); padding: 120px 0 60px; text-align: center;">
-            <div class="container">
-                <p class="eyebrow" style="color: var(--color-accent);">ADMIN PANEL</p>
-                <h1 style="color: var(--color-white);">Inventory Dashboard</h1>
-                <p style="color: #94A3B8; max-width: 600px; margin: 12px auto 0;">Manage your products — add, edit, delete, and search your inventory.</p>
-            </div>
-        </section>
-
         <!-- ========== INVENTORY DASHBOARD ========== -->
-        <section class="section">
+        <section class="inv-dashboard">
             <div class="container">
-                <!-- Stats Row -->
-                <div class="inventory-stats" id="inventoryStats">
-                    <div class="stat-card">
-                        <div class="stat-icon">📦</div>
-                        <div class="stat-value" id="totalProducts">0</div>
-                        <div class="stat-label">Total Products</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🏷️</div>
-                        <div class="stat-value" id="totalCategories">0</div>
-                        <div class="stat-label">Categories</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-value" id="totalStock">0</div>
-                        <div class="stat-label">Total Stock</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-value" id="totalValue">PKR 0</div>
-                        <div class="stat-label">Inventory Value</div>
+                <!-- Header -->
+                <div class="inv-header">
+                    <div class="inv-header-content">
+                        <div>
+                            <span class="inv-header-badge">⚡ Admin Panel</span>
+                            <h1>Inventory Dashboard</h1>
+                            <p>Manage your products — add, edit, delete, and search your inventory.</p>
+                        </div>
+                        <button class="inv-btn inv-btn-accent" onclick="openProductModal()">
+                            <span>+</span> Add Product
+                        </button>
                     </div>
                 </div>
 
-                <!-- Toolbar: Add Product + Search -->
-                <div class="inventory-toolbar">
-                    <button class="btn btn-primary" onclick="openProductModal()">+ Add Product</button>
-                    <div class="inventory-search">
-                        <input type="text" id="searchInput" placeholder="Search products by name or category..." onkeyup="if(event.key === 'Enter') searchProducts()">
-                        <button class="btn btn-outline btn-small" onclick="searchProducts()">Search</button>
-                        <button class="btn btn-small" onclick="resetSearch()" style="background: var(--color-border); color: var(--color-text-main);">Reset</button>
+                <!-- Stats Grid -->
+                <div class="inv-stats-grid" id="inventoryStats">
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">📦</div>
+                        <div class="inv-stat-value" id="totalProducts">0</div>
+                        <div class="inv-stat-label">Total Products</div>
+                    </div>
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">🏷️</div>
+                        <div class="inv-stat-value" id="totalCategories">0</div>
+                        <div class="inv-stat-label">Categories</div>
+                    </div>
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">📊</div>
+                        <div class="inv-stat-value" id="totalStock">0</div>
+                        <div class="inv-stat-label">Total Stock</div>
+                    </div>
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">💰</div>
+                        <div class="inv-stat-value" id="totalValue">PKR 0</div>
+                        <div class="inv-stat-label">Inventory Value</div>
+                    </div>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="inv-toolbar">
+                    <div class="inv-toolbar-left">
+                        <div class="inv-search-box">
+                            <input type="text" id="searchInput" placeholder="Search products by name or category..." onkeyup="if(event.key === 'Enter') searchProducts()">
+                        </div>
+                        <button class="inv-btn inv-btn-primary" onclick="searchProducts()">Search</button>
+                        <button class="inv-btn inv-btn-outline" onclick="resetSearch()">Reset</button>
+                    </div>
+                    <div class="inv-toolbar-right">
+                        <button class="inv-btn inv-btn-outline" onclick="loadInventory()">🔄 Refresh</button>
                     </div>
                 </div>
 
                 <!-- Products Table -->
-                <div class="inventory-table-wrapper">
-                    <table class="inventory-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productsTableBody">
-                            <tr>
-                                <td colspan="7" class="loading-state">
-                                    <div class="spinner"></div>
-                                    <p>Loading products...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
+                <div class="inv-table-wrapper">
 
-    <!-- ========== ADD/EDIT PRODUCT MODAL ========== -->
-    <div class="modal-backdrop" id="productModalBackdrop" onclick="closeProductModal()"></div>
-    <div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-label="Product form">
-        <div class="modal-header">
-            <h3 id="modalTitle">Add Product</h3>
-            <button class="modal-close" onclick="closeProductModal()" aria-label="Close">✕</button>
-        </div>
-        <form id="productForm" onsubmit="saveProduct(event)">
-            <input type="hidden" id="productId">
-            <div class="form-group">
-                <label for="productName">Product Name *</label>
-                <input type="text" id="productName" required placeholder="e.g. Wireless Mouse">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="productCategory">Category *</label>
-                    <input type="text" id="productCategory" required placeholder="e.g. Accessories">
-                </div>
-                <div class="form-group">
-                    <label for="productPrice">Price (PKR) *</label>
-                    <input type="number" id="productPrice" required min="0" step="0.01" placeholder="e.g. 1200">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="productStock">Stock *</label>
-                    <input type="number" id="productStock" required min="0" placeholder="e.g. 25">
-                </div>
-                <div class="form-group">
-                    <label for="productImage">Image URL</label>
-                    <input type="text" id="productImage" placeholder="https://...">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="productDescription">Description</label>
-                <textarea id="productDescription" rows="3" placeholder="Product description..."></textarea>
-            </div>
-            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
-                <input type="checkbox" id="productFeatured" style="width: auto; min-width: 44px; min-height: 44px;">
-                <label for="productFeatured" style="margin: 0;">Featured Product</label>
-            </div>
-            <div class="modal-actions">
-                <button type="button" class="btn" onclick="closeProductModal()" style="background: var(--color-border); color: var(--color-text-main);">Cancel</button>
-                <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
-            </div>
-        </form>
-    </div>
+(File has 760 lines total.) 
+# task_progress RECOMMENDED
 
-    <!-- ========== FOOTER ========== -->
-    <footer class="footer">
+When starting a new task, it is recommended to include a todo list using the task_progress parameter.
+
+
+1. Include a todo list using the task_progress parameter in your next tool call
+2. Create a comprehensive checklist of all steps needed
+3. Use markdown format: - [ ] for incomplete, - [x] for complete
+
+**Benefits of creating a todo/task_progress list now:**
+	- Clear roadmap for implementation
+	- Progress tracking throughout the task
+	- Nothing gets forgotten or missed
+	- Users can see, monitor, and edit the plan
+
+**Example structure:**```
+- [ ] Analyze requirements
+- [ ] Set up necessary files
+- [ ] Implement main functionality
+- [ ] Handle edge cases
+- [ ] Test the implementation
+- [ ] Verify results```
+
+Keeping the task_progress list updated helps track progress and ensures nothing is missed.
+ <environment_details>
+# Visual Studio Code Visible Files
+frontend/inventory.html
+
+# Visual Studio Code Open Tabs
+.gitignore
+frontend/supabase-config.js
+supabase-security-fix.sql
+supabase-setup.sql
+backend/products.json
+supabase-orders.sql
+backend/server.js
+vercel.json
+backend/package.json
+frontend/mobile.js
+frontend/services.html
+frontend/blogs.html
+frontend/checkout.html
+frontend/cart.js
+frontend/products.js
+frontend/cart.css
+frontend/style.css
+frontend/mobile.css
+frontend/checkout.js
+frontend/about.html
+frontend/contact.html
+frontend/index.html
+frontend/products.html
+frontend/inventory.html
+frontend/login.html
+frontend/script.js
+
+# Current Time
+8/18/2026, 12:22:42 PM (Asia/Karachi, UTC+5:00)
+
+# Context Window Usage
+46,567 / 1,048.576K tokens used (4%)
+
+# Current Mode
+ACT MODE
+
+        .inv-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .inv-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .inv-search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .inv-search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid var(--inv-border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--inv-bg);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .inv-search-box input:focus {
+            outline: none;
+            border-color: var(--inv-secondary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .inv-search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        .inv-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .inv-btn-primary {
+            background: var(--inv-secondary);
+            color: white;
+        }
+
+        .inv-btn-primary:hover {
+            background: #1D4ED8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .inv-btn-outline {
+            background: transparent;
+            border: 1px solid var(--inv-border);
+            color: var(--inv-text);
+        }
+
+        .inv-btn-outline:hover {
+            border-color: var(--inv-secondary);
+            color: var(--inv-secondary);
+        }
+
+        .inv-btn-accent {
+            background: var(--inv-accent);
+            color: white;
+        }
+
+        .inv-btn-accent:hover {
+            background: #EA580C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249,115,22,0.3);
+        }
+
+        /* Table */
+        .inv-table-wrapper {
+            background: var(--inv-card);
+            border-radius: 12px;
+            border: 1px solid var(--inv-border);
+            box-shadow: var(--inv-shadow);
+            overflow: hidden;
+        }
+
+        .inv-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inv-table thead {
+            background: var(--inv-primary);
+        }
+
+        .inv-table th {
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 16px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .inv-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--inv-border);
+            font-size: 14px;
+            color: var(--inv-text);
+            vertical-align: middle;
+        }
+
+        .inv-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .inv-table tbody tr:hover {
+            background: rgba(37,99,235,0.03);
+        }
+
+        .inv-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .inv-product-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--inv-border);
+        }
+
+        .inv-category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(37,99,235,0.1);
+            color: var(--inv-secondary);
+        }
+
+        .inv-price {
+            font-weight: 600;
+            color: var(--inv-primary);
+        }
+
+        .inv-stock {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .inv-stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .inv-stock-ok .inv-stock-dot { background: var(--inv-success); }
+        .inv-stock-low .inv-stock-dot { background: var(--inv-warning); }
+        .inv-stock-out .inv-stock-dot { background: var(--inv-danger); }
+
+        .inv-stock-ok { color: var(--inv-success); }
+        .inv-stock-low { color: var(--inv-warning); }
+        .inv-stock-out { color: var(--inv-danger); }
+
+        .inv-action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .inv-action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .inv-edit-btn {
+            background: rgba(37,99,235,0.1);
+            color: var(--inv-secondary);
+        }
+
+        .inv-edit-btn:hover {
+            background: var(--inv-secondary);
+            color: white;
+        }
+
+        .inv-delete-btn {
+            background: rgba(220,38,38,0.1);
+            color: var(--inv-danger);
+        }
+
+        .inv-delete-btn:hover {
+            background: var(--inv-danger);
+            color: white;
+        }
+
+        /* Loading & Empty States */
+        .inv-loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .inv-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--inv-border);
+            border-top-color: var(--inv-secondary);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: inv-spin 0.8s linear infinite;
+        }
+
+        @keyframes inv-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .inv-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--inv-text-secondary);
+        }
+
+        .inv-empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* Warning Banner */
+        .inv-warning {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Modal */
+        .inv-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .inv-modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .inv-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            width: 90%;
+            max-width: 520px;
+            z-index: 1001;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .inv-modal.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .inv-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .inv-modal-header h3 {
+            color: var(--inv-primary);
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .inv-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: var(--inv-bg);
+            color: var(--inv-text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .inv-modal-close:hover {
+            background: var(--inv-danger);
+            color: white;
+        }
+
+        .inv-form-group {
+            margin-bottom: 16px;
+        }
+
+        .inv-form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--inv-text);
+            margin-bottom: 6px;
+        }
+
+        .inv-form-group input,
+        .inv-form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--inv-border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .inv-form-group input:focus,
+        .inv-form-group textarea:focus {
+            outline: none;
+            border-color: var(--inv-secondary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .inv-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .inv-modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .inv-modal-actions .inv-btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .inv-header {
+                padding: 24px;
+            }
+
+            .inv-header h1 {
+                font-size: 22px;
+            }
+
+            .inv-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .inv-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .inv-toolbar-left,
+            .inv-toolbar-right {
+                width: 100%;
+            }
+
+            .inv-search-box {
+                min-width: 100%;
+            }
+
+            .inv-table-wrapper {
+                overflow-x: auto;
+            }
+
+            .inv-table {
+                min-width: 700px;
+            }
+
+            .inv-form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .inv-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar sticky" aria-label="Main navigation">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-column">
-                    <h4><span style="color: var(--color-accent);">⚡</span> E Store</h4>
-                    <p>Your trusted electronics destination.</p>
-                    <div class="footer-social">
-                        <a href="#" aria-label="Facebook">f</a>
-                        <a href="#" aria-label="Instagram">ig</a>
-                        <a href="#" aria-label="Twitter">X</a>
-                        <a href="#" aria-label="LinkedIn">in</a>
+            <a href="index.html" class="nav-logo" aria-label="E Store Home">
+                <span class="logo-icon">⚡</span>
+                E Store
+            </a>
+            <div class="navbar-search" role="search">
+                <input type="search" placeholder="Search products..." aria-label="Search products">
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="blogs.html" class="nav-link">Blogs</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <a href="login.html" class="nav-link">Login</a>
+                <a href="inventory.html" class="nav-link active">Inventory</a>
+            </div>
+            <div class="nav-right">
+                <div class="language-toggle" aria-label="Language selector">
+                    <span>🌐</span>
+                    <span>EN</span>
+                    <div class="language-dropdown">
+                        <button data-lang="en" class="active">English</button>
+                        <button data-lang="ur">اردو</button>
+                        <button data-lang="ar">العربية</button>
                     </div>
                 </div>
-                <div class="footer-column">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="blogs.html">Blogs</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                        <li><a href="inventory.html">Inventory</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Customer Service</h4>
-                    <ul>
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                        <li><a href="#">Order Tracking</a></li>
-                        <li><a href="#">Support</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Contact Info</h4>
-                    <ul>
-                        <li><a href="mailto:exnesssjaffri@gmail.com">exnesssjaffri@gmail.com</a></li>
-                        <li><a href="tel:03332561434">0333 2561434</a></li>
-                        <li>Main Business District, City, Country</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2026 E Store. All rights reserved.</p>
-                <div class="payment-icons">
-                    <span>Visa</span>
-                    <span>Mastercard</span>
-                    <span>PayPal</span>
-                </div>
+                <a href="login.html" class="btn btn-primary btn-small">Login</a>
+                <a href="inventory.html" class="btn btn-primary btn-small">Inventory</a>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
-    </footer>
+    </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="cart.js"></script>
-    <script src="script.js"></script>
-    <script src="mobile.js"></script>
-    <script>
-        // ========== ADMIN AUTH CHECK ==========
-        // Check if user is logged in as admin before allowing access to inventory
-        document.addEventListener('DOMContentLoaded', () => {
-            const ADMIN_KEY = 'e-store-admin-auth';
-            let isAuthenticated = false;
-            
-            try {
-                const auth = JSON.parse(localStorage.getItem(ADMIN_KEY));
-                if (auth && auth.isAdmin === true) {
-                    isAuthenticated = true;
-                }
-            } catch (e) {
-                console.error('Auth check error:', e);
-            }
-            
-            // Also check Supabase session
-            if (!isAuthenticated) {
-                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                supabase.auth.getUser().then(({ data }) => {
-                    if (data && data.user) {
-                        isAuthenticated = true;
-                    } else {
-                        window.location.href = 'login.html';
-                    }
-                }).catch(() => {
-                    window.location.href = 'login.html';
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-backdrop"></div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+        <div class="mobile-menu-search" role="search">
+            <input type="search" placeholder="Search products..." aria-label="Search products">
+        </div>
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="blogs.html" class="nav-link">Blogs</a>
+        <a href="contact.html" class="nav-link">Contact Us</a>
+        <a href="login.html" class="nav-link">Login</a>
+        <a href="inventory.html" class="nav-link active">Inventory</a>
+        <div class="mobile-menu-actions">
+            <div class="language-toggle" aria-label="Language selector">
+                <span>🌐</span>
+                <span>EN</span>
+                <div class="language-dropdown">
+                    <button data-lang="en" class="active">English</button>
+                    <button data-lang="ur">اردو</button>
+                    <button data-lang="ar">العربية</button>
+                </div>
+            </div>
+            <a href="login.html" class="btn btn-primary">Login / Sign Up</a>
+            <a href="inventory.html" class="btn btn-outline">Inventory Dashboard</a>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <!-- ========== INVENTORY DASHBOARD ========== -->
+        <section class="inv-dashboard">
+            <div class="container">
+                <!-- Header -->
+                <div class="inv-header">
+                    <div class="inv-header-content">
+                        <div>
+                            <span class="inv-header-badge">⚡ Admin Panel</span>
+                            <h1>Inventory Dashboard</h1>
+                            <p>Manage your products — add, edit, delete, and search your inventory.</p>
+                        </div>
+                        <button class="inv-btn inv-btn-accent" onclick="openProductModal()">
+                            <span>+</span> Add Product
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="inv-stats-grid" id="inventoryStats">
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">📦</div>
+                        <div class="inv-stat-value" id="totalProducts">0</div>
+                        <div class="inv-stat-label">Total Products</div>
+                    </div>
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">🏷️</div>
+                        <div class="inv-stat-value" id="totalCategories">0</div>
+                        <div class="inv-stat-label">Categories</div>
+                    </div>
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">📊</div>
+                        <div class="inv-stat-value" id="totalStock">0</div>
+                        <div class="inv-stat-label">Total Stock</div>
+                    </div>
+                    <div class="inv-stat-card">
+                        <div class="inv-stat-icon">💰</div>
+                        <div class="inv-stat-value" id="totalValue">PKR 0</div>
+                        <div class="inv-stat-label">Inventory Value</div>
+                    </div>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="inv-toolbar">
+                    <div class="inv-toolbar-left">
+                        <div class="inv-search-box">
+                            <input type="text" id="searchInput" placeholder="Search products by name or category..." onkeyup="if(event.key === 'Enter') searchProducts()">
+                        </div>
+                        <button class="inv-btn inv-btn-primary" onclick="searchProducts()">Search</button>
+                        <button class="inv-btn inv-btn-outline" onclick="resetSearch()">Reset</button>
+                    </div>
+                    <div class="inv-toolbar-right">
+                        <button class="inv-btn inv-btn-outline" onclick="loadInventory()">🔄 Refresh</button>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="inv-table-wrapper">
