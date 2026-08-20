@@ -291,13 +291,13 @@
 // ============================================
 // Load products directly from Supabase (works on Vercel static hosting)
 // ============================================
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const products = [];
 
 // Load products from Supabase
 async function loadProductsFromBackend() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('products')
       .select('*')
       .order('id', { ascending: true });

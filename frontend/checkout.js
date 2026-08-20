@@ -4,7 +4,7 @@ console.log('checkout.js loaded');
 const DELIVERY_FEE = 200;
 const ORDERS_STORAGE_KEY = 'e-store-orders';
 const CART_STORAGE_KEY = 'e-store-cart';
-let supabase = null;
+let supabaseClient = null;
 
 // Read cart from localStorage (same key used by the cart sidebar)
 function getCartData() {
@@ -25,8 +25,8 @@ function getCartData() {
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Safe supabase init — never crash if Supabase is unavailable
     try {
-        if (window.supabase && typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } else {
             console.warn('Supabase not available — checkout will work with local cart only.');
         }
@@ -261,8 +261,8 @@ async function placeOrder(e) {
             status: 'pending'
         };
 
-        if (supabase) {
-            const { error } = await supabase
+        if (supabaseClient) {
+            const { error } = await supabaseClient
                 .from('orders')
                 .insert([orderData]);
 

@@ -140,7 +140,7 @@
     <script src="mobile.js"></script>
     <script>
         // ========== SUPABASE CLIENT ==========
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let mode = 'signin';
 
         // ========== MODE TOGGLE ==========
@@ -216,9 +216,9 @@
             try {
                 let result;
                 if (mode === 'signin') {
-                    result = await supabase.auth.signInWithPassword({ email, password });
+                    result = await supabaseClient.auth.signInWithPassword({ email, password });
                 } else {
-                    result = await supabase.auth.signUp({ email, password });
+                    result = await supabaseClient.auth.signUp({ email, password });
                 }
 
                 const { error } = result;
