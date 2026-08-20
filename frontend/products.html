@@ -285,33 +285,19 @@
 </aside>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
 <script>
 // ============================================
-// Load products from Supabase backend
+// Load products from backend API (same source as inventory dashboard)
 // ============================================
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const API_BASE = '/api';
 const products = [];
 
-// Show static products immediately so the grid is never empty,
-// then try to upgrade from the backend when available.
-(function renderStaticProducts() {
-  const staticProducts = getStaticProducts();
-  products.length = 0;
-  staticProducts.forEach(p => products.push(p));
-  renderProducts(products);
-})();
-
-// Load products from Supabase (overwrites static list when data is available)
+// Load products from the backend API
 async function loadProductsFromBackend() {
   try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .order('id', { ascending: true });
-    
-    if (error) throw error;
+    const res = await fetch(API_BASE + '/products');
+    if (!res.ok) throw new Error('Failed to fetch products');
+    const data = await res.json();
     
     if (data && data.length > 0) {
       products.length = 0;
@@ -320,27 +306,11 @@ async function loadProductsFromBackend() {
       return;
     }
   } catch (err) {
-    console.error('Failed to load products from backend, using static list:', err);
+    console.error('Failed to load products from backend:', err);
   }
   
-  // Fallback to static products if backend fails or returns nothing
-  const staticProducts = getStaticProducts();
-  products.length = 0;
-  staticProducts.forEach(p => products.push(p));
-  renderProducts(products);
-}
-
-function getStaticProducts() {
-  return [
-    { id: 1, name: 'Wireless Mouse', price: 1200, stock: 25, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/d1gb7gicmr8iau.cloudfront.net/495c9afedb2d75dbdf2593e0258a8b0c6999babc.png', isFeatured: true, rating: 4.5, description: 'High precision wireless mouse with ergonomic design' },
-    { id: 2, name: 'USB-C Cable', price: 500, stock: 60, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/media.startech.com/73fe27e5c5650031fdd8deafb8a44e0013d06770.jpg', isFeatured: true, rating: 4.0, description: 'Fast charging USB-C cable, 2 meter length' },
-    { id: 3, name: 'LED Monitor 24 inch', price: 22000, stock: 10, category: 'Monitors', image: 'https://kimi-web-img.kimi.ai/img/evmzone.com/b9aff6315a20365d9122a474515a9125472a38a8.jpg', isFeatured: true, rating: 4.8, description: 'Full HD LED monitor with 75Hz refresh rate' },
-    { id: 4, name: 'Bluetooth Speaker', price: 3500, stock: 40, category: 'Audio', image: 'https://kimi-web-img.kimi.ai/img/cdn.thewirecutter.com/080dcb6c0c16e2b5e607648ce5bf3207e272e7d3.jpg', isFeatured: true, rating: 4.3, description: 'Portable Bluetooth speaker with deep bass' },
-    { id: 5, name: 'Laptop Stand', price: 2500, stock: 30, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/m.media-amazon.com/8bed9508a08a8d838c136c416f9045b69889d41e.jpg', isFeatured: true, rating: 4.2, description: 'Adjustable aluminum laptop stand' },
-    { id: 6, name: 'HDMI Cable', price: 800, stock: 100, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/assets.aten.com/5610ab62b42fc988b39286da1f79d954a0cbe947.jpg', isFeatured: true, rating: 4.1, description: 'High speed HDMI cable 4K support' },
-    { id: 7, name: 'Mechanical Keyboard', price: 4500, stock: 20, category: 'Accessories', image: 'https://kimi-web-img.kimi.ai/img/resource.logitechg.com/ea80d73828311868a607414691db30c4f81679ff.png', isFeatured: true, rating: 4.7, description: 'RGB mechanical keyboard with blue switches' },
-    { id: 8, name: 'Webcam HD', price: 3000, stock: 15, category: 'Cameras', image: 'https://kimi-web-img.kimi.ai/img/prod-cdn.prod.asbis.io/1cf807f0702eee089a09e068f43b3b6c04c66e8f.webp', isFeatured: true, rating: 4.4, description: '1080p HD webcam with built-in microphone' }
-  ];
+  // Fallback: show empty state if backend fails or returns nothing
+  renderProducts([]);
 }
 
 function renderProducts(list) {
