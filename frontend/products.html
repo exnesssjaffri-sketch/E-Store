@@ -285,19 +285,24 @@
 </aside>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <script>
 // ============================================
-// Load products from backend API (same source as inventory dashboard)
+// Load products directly from Supabase (works on Vercel static hosting)
 // ============================================
-const API_BASE = '/api';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const products = [];
 
-// Load products from the backend API
+// Load products from Supabase
 async function loadProductsFromBackend() {
   try {
-    const res = await fetch(API_BASE + '/products');
-    if (!res.ok) throw new Error('Failed to fetch products');
-    const data = await res.json();
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('id', { ascending: true });
+    
+    if (error) throw error;
     
     if (data && data.length > 0) {
       products.length = 0;
@@ -306,7 +311,7 @@ async function loadProductsFromBackend() {
       return;
     }
   } catch (err) {
-    console.error('Failed to load products from backend:', err);
+    console.error('Failed to load products from Supabase:', err);
   }
   
   // Fallback: show empty state if backend fails or returns nothing
